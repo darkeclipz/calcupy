@@ -2,6 +2,8 @@
 
 Calculus powered graphical calculator.
 
+![Example](screenshots/ex1.png)
+
 # Usage
 
 Currently the application has not been deployed yet.
