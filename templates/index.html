@@ -1,0 +1,362 @@
+{% raw %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MathPy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/bootstrap.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>-->
+
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+    
+    body {
+        max-width: 650px;
+        margin: 40px auto;
+        font-family: "Roboto";
+        font-size: 12pt;
+    }
+
+
+    .fade-out {
+        opacity: 0 !important;
+        
+    }
+
+    .fade-in {
+        opacity: 1 !important;
+    }
+
+    #output { transition: opacity .1s; opacity: 0; }
+
+    .hide {
+        display: none;
+    }
+
+    #actions button {
+        height: 40px;
+        margin-left: 0px !important;
+        margin-right: 4px !important;
+    }
+
+    table tr td {
+        vertical-align: middle !important;
+    }
+
+    .fade-in {
+        opacity: 1;
+        animation-name: fadeInOpacity;
+        animation-iteration-count: 1;
+        animation-timing-function: ease-in;
+        animation-duration: .5s;
+    }
+
+    @keyframes fadeInOpacity {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div class="text-center">
+            <h1>$\oint$ MathPy <small>Calculus powered graphical calculator</small></h1>
+        </div>
+
+        <div class="card border-primary mb-3">
+            <div class="card-header">Input</div>
+            <div class="card-body">
+                <p class="card-text">Enter an expression to get started:</p>
+                <input id="function" placeholder="Enter an expression: x + y" class="form-control" v-model.lazy="expression" v-on:change="parse"/>
+            </div>
+        </div>
+
+        <div class="card text-white bg-danger mb-3" v-if="expression_error">
+            <div class="card-header">Oh oh...</div>
+            <div class="card-body">
+                <p class="card-text" class="font-white">
+                    There seems to be something wrong with your expression!
+                    <ul>
+                        <li>Is multiplication stated with *, i.e. 2*x*y?</li>
+                        <li>Is the exponential function defined with exp(2) instead of e^2?</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <div id="info" class="card border-secondary mb-3" v-if="parsed">
+            <div class="card-header">Expression</div>
+            <div class="card-body">
+                <p class="card-text">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
+                    {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. <span v-if="variables.length == 0">There is no action available.</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="card border-secondary mb-3 output" v-if="plot_show">
+            <div class="card-header">Plot</div>
+            <div class="card-body">
+                <div class="text-center" v-if="plot_base64">
+                    <img id="plot" :src="plot_base64" v-bind:class="[ plot_base64 ? 'fade-in' : '' ]"/>
+                </div>
+                <div id="loader" class="progress" v-if="!plot_base64 && !plot_error" style="height: 24px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                </div>
+                <div v-if="plot_error">Something went wrong while plotting:<br/><pre>{{plot_error}}</pre></span><br/>
+                    <button class="btn btn-primary" v-on:click="plot" type="button" >Try again</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="actions" class="card border-secondary mb-3" v-if="variables.length > 0">
+            <div class="card-header">Actions</div>
+            <div class="card-body">
+                <p>The following actions are available for this expression:</p>
+                <table class="table" v-if="variables.length > 0" style="margin-bottom: 0">
+                    <tbody>
+                        <tr v-if="expression_equality">
+                            <td>Algebra</td>
+                            <td>
+                                <button v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
+                            </td>
+                        </tr>
+                        <tr v-if="variables.length > 0 && !expression_equality">
+                            <td style="width: 100px;">Calculus</td>
+                            <td>
+                                <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="diff(variables[0])">$\textrm{d} / \textrm{d}{{variables[0]}}$</button>
+                                <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="diff2(variables[0])">$\textrm{d}^2 / \textrm{d}{{variables[0]}}^2$</button>
+                                <button v-if="variables.length > 1" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="diff(v)">$\partial / \partial {{ v }}$</button>
+                                <button v-if="variables.length > 1" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="diff2(v)">$\partial^2 / \partial {{ v }}^2$</button>
+                                <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0])">$\int$</button>
+                                <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '0', 'T')">$\int_0^T$</button>
+                                <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '-oo', 'oo')">$\int_{-\infty}^{+\infty}$</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card border-secondary mb-3 output" v-if="action_show">
+            <div class="card-header">Result</div>
+            <div class="card-body">
+                <div v-if="action_out" id="action-result" v-bind:class="[ action_out ? 'fade-in' : '' ]" >
+                    {{action_in}}
+                    <hr/>
+                    {{action_out}}
+                </div>
+                <div v-if="!action_out && !action_error">
+                    <div id="loader" class="progress" style="height: 24px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
+                <div v-if="action_error">
+                    Something went wrong with the action:<br/>
+                    <pre>{{action_error}}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <small><b>MathPy</b> Calculus powered graphical calculator</small>
+        </div>
+    </div>
+
+    <script type="text/x-mathjax-config">
+        // Use $ for inline equations.
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script>
+    
+    class HTTP {
+        post(endpoint, object, successCallback, errorCallback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", endpoint, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() { 
+                if(this.status == 200) successCallback(JSON.parse(this.responseText)); 
+                else                   errorCallback(this.responseText)
+            }
+            xhr.send(JSON.stringify(object));
+        } 
+    }
+
+    function replaceAll(str, find, replace) {
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    var http = new HTTP();
+    var app = new Vue({
+        el: '#app',
+        data: {
+            expression: "exp(y) * cos(x) + exp(x) * sin(y)",
+            expression_parsed: "",
+            expression_latex: "",
+            expression_error: false,
+            expression_equality: false,
+            variables: [],
+            parsed: false,
+            plot_show: false,
+            plot_base64: "",
+            plot_error: "",
+            plot_xlim: [-5, 5],
+            plot_ylim: [-5, 5],
+            action_show: false,
+            action_in: "",
+            action_out: "",
+            action_error: ""
+        },
+        methods: {
+            expr: function() {
+                let castedExpression = replaceAll(this.expression, '[\\^]', '**');
+                castedExpression = replaceAll(castedExpression, 'abs', 'Abs');
+                if(castedExpression.indexOf('=') >= 0) {
+                    let parts = castedExpression.split('=');
+                    castedExpression = 'Eq(' + parts[0] + ',' + parts[1] + ')';
+                    this.expression_equality = true;
+                }
+                return castedExpression;
+            },
+            parse: function() {
+                this.reset(); 
+            
+                http.post('/expression', {'expression': this.expr() }, 
+                    (result) => {
+                        app.expression_parse = result.expression;
+                        app.expression_latex = replaceAll(result.expression_latex, 'frac', 'dfrac');
+                        app.variables = result.variables;
+                        app.parsed = true;
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                        if((app.variables.length == 2 || app.variables.length || 1) && !app.expression_equality)
+                            app.plot();
+                    },
+                    (error) => {
+                        this.expression_error = true;
+                        console.error(error);
+                    }
+                );
+            },
+            diff: function(to) {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr(), 'var': to };
+                http.post('/diff', data, 
+                    (result) => {
+                        this.action_in = 'The derivative of $' + result.in + '$ with respect to $' + result.var + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        console.warn(error);
+                    });
+            },
+            diff2: function(to) {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr(), 'var': to };
+                http.post('/diff2', data, 
+                    (result) => {
+                        this.action_in = 'The second derivative of $' + result.in + '$ with respect to $' + result.var + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        console.warn(error);
+                    });
+            },
+            integrate: function(v, from='', to='') {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr(), 'var': v, 'from': from, 'to': to };
+                http.post('/integrate', data, 
+                    (result) => {
+                        let limits = to ? '_{' + from.replace('oo', '\\infty') + '}^{' + to.replace('oo', '+\\infty') + '}' : '';
+                        this.action_in = 'The integral of $\\int ' + limits + result.in + '\\ d' + result.var + '$ is:';
+                        this.action_out = '$$' + result.out + (result.out.indexOf('int') < 0 && !to ? ' + C$$' : '$$');
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        console.warn(error);
+                    });
+            },
+            solveFor: function(v) {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr(), 'var': v };
+                http.post('/solvefor', data, 
+                    (result) => {
+                        this.action_in = 'Solving $' + result.in + '$ for $' + result.var + '$ gives:';
+                        this.action_out = '$$' + result.var + '=' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        this.action_error = error;
+                        console.warn(error);
+                    });
+            },
+            plot: function() {
+                let data = { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim };
+                this.plot_show = true;
+                this.plot_base64 = "";
+                this.plot_error = "";
+                http.post('/plot', data, 
+                    (result) => { app.plot_base64 = result.img; },
+                    (error) => { console.warn(error); app.plot_error = error; }
+                );
+            },
+            reset: function() {
+                this.expression_error = false;
+                this.expression_equality = false;
+                this.parsed = false;
+                this.expression_parsed = false;
+                this.expression_latex = false;
+                this.variables = [];
+                this.plot_show = false;
+                this.plot_base64 = "";
+                this.plot_error = "";
+                this.action_show = false;
+                this.resetAction();
+            },
+            resetAction: function() {
+                this.action_in = "";
+                this.action_out = "";
+                this.action_error = "";
+                if(this.action_out)
+                    document.getElementById('action-result').innerHTML = "{{action_in}}<hr/>{{action_out}}";
+            }
+        }
+    })
+
+    app.parse();
+    
+    </script>
+</body>
+</html>
+{% endraw %}
