@@ -102,7 +102,8 @@ def plot():
             ax.plot(X,Y, c='purple', lw=2)
             ax.set_xlabel(str(list(ps.free_symbols)[0]))
             ax.set_ylabel('f({})'.format(str(list(ps.free_symbols)[0])))
-            plt.title('Line plot of ${}$'.format(latex(ps)))
+            if '\\' not in latex(ps):
+                plt.title('Line plot of ${}$'.format(latex(ps)))
             plt.grid(ls='dashed', alpha=.5)
         
         elif len(ps.free_symbols) == 2:
