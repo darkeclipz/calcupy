@@ -235,6 +235,7 @@ def cplot():
         if len(ps.free_symbols) != 2: 
             raise ValueError('Contour plots requires a function of two variables.')
 
+        detail = 24
         fig = plt.figure(figsize=(6.15,5))
         fig.clf()
 
@@ -245,7 +246,7 @@ def cplot():
         Z = zs.reshape(X.shape)
                     
         ax = fig.add_subplot(111)
-        CS = ax.contourf(X, Y, Z, 24, cmap=colormap)
+        CS = ax.contourf(X, Y, Z, detail*2, cmap=colormap)
         fig.colorbar(CS, shrink=0.5, aspect=5)
         plt.title('Contour plot of ${}$'.format(latex(ps)))
         ax.set_xlabel(str(var[0]))

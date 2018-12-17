@@ -2,7 +2,7 @@ var http = new HTTP();
 var app = new Vue({
     el: '#app',
     data: {
-        expression: "exp(y) * cos(x) + exp(x) * sin(y)",
+        expression: "",
         expression_parsed: "",
         expression_latex: "",
         expression_error: false,
@@ -40,6 +40,7 @@ var app = new Vue({
         parse: function() {
             this.reset(); 
             this.setUrl();
+            if(!this.expression) return;
             http.post('/expression', {'expression': this.expr() }, 
                 (result) => {
                     app.expression_parse = result.expression;
@@ -241,10 +242,21 @@ var app = new Vue({
             this.$nextTick(function() {
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
             });
+        },
+        rand: function() {
+            let expressions = [
+                '(-3*x)/(x^2+y^2+1)', 
+                'sin(1/2*x*y)', 
+                'exp(y) * cos(x) + exp(x) * sin(y)', 
+                'sqrt(4*x^2 + y^2) + cos(4*x) * y', 
+                '1 / (1 + x^2 + y^2)'
+            ];
+            this.expression = expressions[Math.floor(Math.random()*expressions.length)];
         }
     }
 })
 
+app.rand();
 app.readUrl();
 app.parse();
 
