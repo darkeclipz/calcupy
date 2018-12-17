@@ -12,7 +12,7 @@ Based on what type of expression and how many variables there are, the following
 
 |Variables|Type|Action|
 |--|--|--|
-|0 - constants|Expression|It will evaluate the expression.|
+|0|Expression|Evaluate|
 |1+|Expression, equality, inequality|Simplify|
 |1+|Expression, equality, inequality|Expand|
 |1+|Expression, equality, inequality|Expand trig|
