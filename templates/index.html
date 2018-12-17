@@ -71,6 +71,7 @@
                     <hr/>
                     <button class="btn btn-primary" v-on:click="plot" type="button">Surface</button>
                     <button class="btn btn-primary" v-on:click="cplot" type="button">Contour</button>
+                    <button class="btn btn-primary" v-on:click="gplot" type="button">Gradient</button>
                 </div>
             </div>
         </div>
@@ -329,6 +330,16 @@
                 this.plot_base64 = "";
                 this.plot_error = "";
                 http.post('/cplot', data, 
+                    (result) => { app.plot_base64 = result.img; },
+                    (error) => { console.warn(error); app.plot_error = error; }
+                );
+            },
+            gplot: function() {
+                let data = { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim };
+                this.plot_show = true;
+                this.plot_base64 = "";
+                this.plot_error = "";
+                http.post('/gplot', data, 
                     (result) => { app.plot_base64 = result.img; },
                     (error) => { console.warn(error); app.plot_error = error; }
                 );

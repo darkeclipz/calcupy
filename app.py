@@ -17,6 +17,7 @@ from sympy.parsing.sympy_parser import parse_expr
 
 font = {'size': 12}
 matplotlib.rc('font', **font)
+colormap = cm.magma
 
 @app.route('/')
 def index():
@@ -146,7 +147,7 @@ def plot():
             Z = zs.reshape(X.shape)
 
             ax = fig.add_subplot(111, projection='3d')
-            ax.plot_surface(X, Y, Z, cmap=cm.inferno)
+            ax.plot_surface(X, Y, Z, cmap=colormap)
 
             plt.title('Surface plot of ${}$'.format(latex(ps)))
             ax.set_xlabel(str(var[0]))
@@ -171,7 +172,7 @@ def plot():
 def cplot():
     try:
 
-        print('plot: {}'.format(request.json))
+        print('cplot: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = [str(s) for s in ps.free_symbols]
         var.sort()
@@ -188,7 +189,7 @@ def cplot():
         Z = zs.reshape(X.shape)
                     
         ax = fig.add_subplot(111)
-        CS = ax.contourf(X, Y, Z, 24, cmap=cm.inferno)
+        CS = ax.contourf(X, Y, Z, 24, cmap=colormap)
         fig.colorbar(CS, shrink=0.5, aspect=5)
         plt.grid(ls='dashed', alpha=.5)
         plt.title('Contour plot of ${}$'.format(latex(ps)))
@@ -204,6 +205,58 @@ def cplot():
     except Exception as e:
         print(e)
         return str(e), 400
+
+@app.route('/gplot', methods=["POST"])
+def gplot():
+    try:
+
+        print('gplot: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        var = [str(s) for s in ps.free_symbols]
+        var.sort()
+        if len(ps.free_symbols) != 2: 
+            raise ValueError('Contour plots requires a function of two variables.')
+
+        fig = plt.figure(figsize=(6.15,5))
+        fig.clf()
+        ax = fig.add_subplot(111)
+
+        detail = 24
+        arrows = 1.5
+
+        # contour plot
+        grad = Matrix([ps.diff(var[0]), ps.diff(var[1])])
+        xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], detail)
+        ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], detail)
+        X, Y = np.meshgrid(xs, ys)
+        zs = np.array([ps.subs('x', x).subs('y', y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+        Z = zs.reshape(X.shape)
+        plt.contourf(X, Y, Z, detail*2, cmap=colormap)
+
+        # vector field
+        xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], np.floor(detail/arrows))
+        ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], np.floor(detail/arrows))
+        X, Y = np.meshgrid(xs, ys)
+        dzs = np.array([grad.subs('x', x).subs('y', y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+        dZx = [z[0] for z in dzs]
+        dZy = [z[1] for z in dzs]
+        dZz = [np.sqrt(np.dot(z,z)) for z in dzs]
+        quiv = plt.quiver(X,Y,dZx,dZy,dZz,cmap=colormap, pivot="tip")
+        plt.colorbar(quiv, shrink=0.8)
+
+        plt.title('Gradient plot of ${}$'.format(latex(ps)))
+        ax.set_xlabel(str(var[0]))
+        ax.set_ylabel(str(var[1]))
+
+        data = BytesIO()
+        fig.savefig(data)
+        data.seek(0)
+        encoded_img = base64.b64encode(data.read())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })  
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400   
 
 
 @app.route('/test')
