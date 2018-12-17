@@ -27,6 +27,8 @@ body {
     height: 40px;
     margin-left: 0px !important;
     margin-right: 4px !important;
+    margin-bottom: 2px !important;
+    margin-top: 2px !important;
 }
 
 table tr td {
@@ -47,5 +49,74 @@ table tr td {
     }
     100% {
         opacity: 1;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    body {
+        margin: 18px;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    #plot {
+        max-width: 534px;
+    }
+}
+@media only screen and (max-width: 600px) {
+    body {
+        margin: 18px;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    #plot {
+        max-width: 434px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    body {
+        margin: 18px;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    #plot {
+        max-width: 334px;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    body {
+        margin: 18px;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    #plot {
+        max-width: 234px;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    body {
+        margin: 18px;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    #plot {
+        max-width: 134px;
     }
 }
