@@ -89,7 +89,7 @@
                                 <button type="button" class="btn btn-primary" v-on:click="expand(false)">Expand</button>
                                 <button type="button" class="btn btn-primary" v-on:click="expand(true)">Expand trig</button>
                                 <button type="button" class="btn btn-primary" v-on:click="factor">Factor</button>
-                                <button type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
+                                <button v-if="!(expression_equality || expression_inequality)" type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
                                 <button v-if="expression_equality || expression_inequality" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
                             </td>
                         </tr>
