@@ -93,7 +93,6 @@ def plot():
 
             X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 64)
             Y = [ps.subs(list(ps.free_symbols)[0], x) for x in X]
-
             ax = fig.add_subplot(111)
             ax.plot(X,Y, c='purple', lw=2)
             ax.set_xlabel(str(list(ps.free_symbols)[0]))
@@ -106,7 +105,6 @@ def plot():
 
             var = [str(s) for s in ps.free_symbols]
             var.sort()
-            print(var)
             xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 32)
             ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], 32)
             X, Y = np.meshgrid(xs, ys)
