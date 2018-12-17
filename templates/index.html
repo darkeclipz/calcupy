@@ -184,7 +184,7 @@
             },
             parse: function() {
                 this.reset(); 
-            
+                this.setUrl();
                 http.post('/expression', {'expression': this.expr() }, 
                     (result) => {
                         app.expression_parse = result.expression;
@@ -301,11 +301,29 @@
                 this.action_error = "";
                 if(this.action_out)
                     document.getElementById('action-result').innerHTML = "{{action_in}}<hr/>{{action_out}}";
+            },
+            setUrl: function() {
+                window.history.pushState({page: "index"}, "expression", "?expr=" + encodeURIComponent(this.expression));
+            },
+            readUrl: function() {
+                let url = new URL(window.location.href);
+                let expr = url.searchParams.get('expr');
+                if(expr) {
+                    this.expression = expr;
+                }
             }
         }
     })
 
+    app.readUrl();
     app.parse();
+
+    window.onpopstate = function(e) {
+        if(e.state) {
+            app.readUrl();
+            app.parse();
+        }
+    }
     
     </script>
 </body>
