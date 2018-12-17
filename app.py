@@ -277,7 +277,7 @@ def gplot():
         ax = fig.add_subplot(111)
 
         detail = 24
-        arrows = 1.5
+        arrows = 1
 
         # contour plot
         grad = Matrix([ps.diff(var[0]), ps.diff(var[1])])
