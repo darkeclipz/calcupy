@@ -44,5 +44,6 @@ There is no UI component yet to change the plot limits. However, it can be done 
  * Sympy
  * Flask
  * Vue.js
+ * Mathjax
 
 Hosted on Heroku with gUnicorn.
