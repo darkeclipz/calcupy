@@ -86,11 +86,7 @@ def plot():
     try:
 
         print('plot: {}'.format(request.json))
-
         ps = parse_expr(request.json['expression'], locals())
-
-        print('Expression: {}'.format(ps))
-
         fig = plt.figure(figsize=(5,5))
 
         if len(ps.free_symbols) == 1:
