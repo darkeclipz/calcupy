@@ -36,6 +36,8 @@ The following are examples of functions that are understood:
 
 It is also possible to construct matrices with `Matrix([[1,2],[3,4]])`. It is also possible to create multiple line plots with the following matrix: `Matrix([x,x^2,x^3,x^4])`. Imaginairy numbers can be declared with `im(x)`.
 
+There is no UI component yet to change the plot limits. However, it can be done manually by opening the console and entering `app.plot_xlim = app.plot_ylim = [-10,10]; app.plot()`.
+
 # Thanks to
 
  * Matplotlib
