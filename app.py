@@ -21,7 +21,7 @@ def index():
 @app.route('/expression', methods=['POST'])
 def expression():
     try:
-        print('Data received: {}'.format(request.json))
+        print('expression: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         symbols = [str(s) for s in ps.free_symbols]
         symbols.sort()
@@ -34,7 +34,7 @@ def expression():
 @app.route('/diff', methods=['POST'])
 def diff():
     try:
-        print('Data received: {}'.format(request.json))
+        print('diff: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
         return jsonify({ 'in': latex(ps), 'out': latex(ps.diff(var)), 'var': var })
@@ -46,7 +46,7 @@ def diff():
 @app.route('/diff2', methods=['POST'])
 def diff2():
     try:
-        print('Data received: {}'.format(request.json))
+        print('diff2: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
         return jsonify({ 'in': latex(ps), 'out': latex(ps.diff(var).diff(var)), 'var': var })
@@ -58,7 +58,7 @@ def diff2():
 @app.route('/integrate', methods=['POST'])
 def integration():
     try:
-        print('Data received: {}'.format(request.json))
+        print('integrate: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = [s for s in ps.free_symbols if str(s) == request.json['var']][0] 
         limits = (var, request.json['from'], request.json['to']) if len(request.json['to']) > 0 else var
@@ -71,7 +71,7 @@ def integration():
 @app.route('/solvefor', methods=['POST'])
 def solve_for():
     try:
-        print('Data received: {}'.format(request.json))
+        print('solve for: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
         return jsonify({ 'in': latex(ps), 'out': latex(solve(ps, var)), 'var': var })
@@ -85,7 +85,7 @@ def plot():
 
     try:
 
-        print('Data received: {}'.format(request.json))
+        print('plot: {}'.format(request.json))
 
         ps = parse_expr(request.json['expression'], locals())
 
