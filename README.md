@@ -6,9 +6,9 @@ The app has been deployed to [`https://pymath-api-heroku.herokuapp.com/`](https:
 
 # Usage
 
-Enter an expression to get started. The calculator will first evaluate the expression and determine if it is an expression, equality or inequality. If it is an expression with one variable, a line plot, and single variable calculus is available. If the expression has two variables, a surface, contour and gradient plot are available, as well as multivariable calculus functions. Otherwise there are basic algebra methods available, such as solving for one variable, expanding, factoring, finding factors, and trigonometric expansions.
+Enter an expression to get started. The calculator will evaluate the expression and determine if it is an expression, equality or inequality. If it is an expression with one variable, a line plot, and single variable calculus is available. If the expression has two variables, a surface, contour and gradient plot are available, as well as multivariable calculus functions. Otherwise there are basic algebra methods available, such as solving for one variable, expanding, factoring, finding factors, and trigonometric expansions.
 
-Base on what type of expression and how many variables there are, the following functionality is available:
+Based on what type of expression and how many variables there are, the following functionality is available:
 
 |Variables|Type|Action|
 |--|--|--|
@@ -57,7 +57,7 @@ The following are examples of expressions that are understood:
    * [`x^2 < 5`](https://pymath-api-heroku.herokuapp.com/?expr=x%5E2%20%3C%3D%205)
    * [`sqrt(x) < x`](https://pymath-api-heroku.herokuapp.com/?expr=sqrt(x)%20%3C%20x)
 
-It is also possible to construct matrices with [`Matrix([[1,2],[3,4]]) * t`](https://pymath-api-heroku.herokuapp.com/?expr=Matrix%28%5B%5B1%2C2%5D%2C%5B3%2C4%5D%5D%29%20*%20t). Accidently, you can also create multiple line plots with the following matrix: [`Matrix([x,x^2,x^3,x^4])`](https://pymath-api-heroku.herokuapp.com/?expr=Matrix%28%5Bx%2Cx%5E2%2Cx%5E3%2Cx%5E4%5D%29). Imaginairy numbers can be declared with ).
+It is also possible to construct matrices with [`Matrix([[1,2],[3,4]]) * t`](https://pymath-api-heroku.herokuapp.com/?expr=Matrix%28%5B%5B1%2C2%5D%2C%5B3%2C4%5D%5D%29%20*%20t). Accidently, you can also create multiple line plots with the following matrix: [`Matrix([x,x^2,x^3,x^4])`](https://pymath-api-heroku.herokuapp.com/?expr=Matrix%28%5Bx%2Cx%5E2%2Cx%5E3%2Cx%5E4%5D%29).
 
 There is no UI component yet to change the plot limits. However, it can be done manually by opening the console and entering `app.plot_xlim = app.plot_ylim = [-10,10]; app.plot()`.
 
