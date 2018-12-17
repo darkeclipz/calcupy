@@ -14,7 +14,7 @@ The following options are available:
 
 |Variables|Type|Action|
 |--|--|--|
-|0 - constants|Expression|It wil evaluate the expression.|
+|0 - constants|Expression|It will evaluate the expression.|
 |1|Expression|Line plot|
 |1|Expression|Derivative|
 |1|Expression|Second derivative|

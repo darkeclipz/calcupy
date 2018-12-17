@@ -8,66 +8,14 @@
     <link rel="stylesheet" href="/static/bootstrap.min.css"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
 
-    <!-- development version, includes helpful console warnings -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- development version, includes helpful console warnings
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
 
-    <style>
-    
-    body {
-        max-width: 650px;
-        margin: 40px auto;
-        font-family: "Roboto";
-        font-size: 12pt;
-    }
-
-
-    .fade-out {
-        opacity: 0 !important;
-        
-    }
-
-    .fade-in {
-        opacity: 1 !important;
-    }
-
-    #output { transition: opacity .1s; opacity: 0; }
-
-    .hide {
-        display: none;
-    }
-
-    #actions button {
-        height: 40px;
-        margin-left: 0px !important;
-        margin-right: 4px !important;
-    }
-
-    table tr td {
-        vertical-align: middle !important;
-    }
-
-    .fade-in {
-        opacity: 1;
-        animation-name: fadeInOpacity;
-        animation-iteration-count: 1;
-        animation-timing-function: ease-in;
-        animation-duration: .5s;
-    }
-
-    @keyframes fadeInOpacity {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    
-    </style>
+    <!-- production version, optimized for size and speed -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
 
