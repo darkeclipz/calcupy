@@ -41,7 +41,8 @@ def simplifyexpr():
     try:
         print('simplify: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
-        return jsonify({ 'in': latex(ps), 'out': latex(expand(ps)) })
+        result = expand(ps)
+        return jsonify({ 'in': latex(ps), 'out': latex(result) })
 
     except Exception as e:
         print(e)
