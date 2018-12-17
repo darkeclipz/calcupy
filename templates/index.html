@@ -246,7 +246,7 @@
                         app.$nextTick(function() {
                             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                         });
-                        if((app.variables.length == 2 || app.variables.length || 1) && !app.expression_equality)
+                        if((app.variables.length == 2 || app.variables.length == 1) && !app.expression_equality)
                             app.plot();
                     },
                     (error) => {
