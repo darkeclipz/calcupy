@@ -64,7 +64,9 @@ def grad():
     try:
         print('grad: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
-        grad = Matrix([ps.diff(v) for v in ps.free_symbols])
+        symbols = [str(s) for s in ps.free_symbols]
+        symbols.sort()
+        grad = Matrix([ps.diff(v) for v in symbols])
         return jsonify({ 'in': latex(ps), 'out': latex(grad) })
 
     except Exception as e:
