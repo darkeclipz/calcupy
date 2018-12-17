@@ -1,17 +1,14 @@
 # MathPy
 
-Calculus powered graphical calculator, check it live at 
- [`https://pymath-api-heroku.herokuapp.com/`](https://pymath-api-heroku.herokuapp.com/).
+Calculus powered graphical calculator.
 
-![Example](screenshots/ex1.png)
+The app has been deployed to [`https://pymath-api-heroku.herokuapp.com/`](https://pymath-api-heroku.herokuapp.com/). 
 
 # Usage
 
-The app has been deployed to [`https://pymath-api-heroku.herokuapp.com/`](https://pymath-api-heroku.herokuapp.com/).
+Enter an expression to get started. The calculator will first evaluate the expression and determine if it is an expression, equality or inequality. If it is an expression with one variable, a line plot, and single variable calculus is available. If the expression has two variables, a surface, contour and gradient plot are available, as well as multivariable calculus functions. Otherwise there are basic algebra methods available, such as solving for one variable, expanding, factoring, finding factors, and trigonometric expansions.
 
-The app will automatically detect how many variables there are in the expression. It is also possible to give an equality as expression.
-
-The following options are available:
+Base on what type of expression and how many variables there are, the following functionality is available:
 
 |Variables|Type|Action|
 |--|--|--|
@@ -36,19 +33,21 @@ The following options are available:
 |2|Expression|Hessian matrix|
 |1+|Equality, inequality|Solve for variable|
 
+Not what you want? Submit what you are missing, as an issue, on Github.
+
 # Examples
 
 The following are examples of expressions that are understood:
 
  * Constants (evaluate):
-   * [`e^(sqrt(-1)*pi)`](https://pymath-api-heroku.herokuapp.com/?expr=exp((sqrt(-1)*pi)))
+   * [`exp((sqrt(-1)*pi))`](https://pymath-api-heroku.herokuapp.com/?expr=exp((sqrt(-1)*pi)))
    * [`32!`](https://pymath-api-heroku.herokuapp.com/?expr=32!)
  * One variable: 
    * [`1 / (1 + x^2)`](https://pymath-api-heroku.herokuapp.com/?expr=1%20%2F%20(1%20%2B%20x%5E2))
  * Two variables: 
    * [`1 / (1 + x^2 + y^2)`](https://pymath-api-heroku.herokuapp.com/?expr=1%20%2F%20(1%20%2B%20x%5E2%20%2B%20y%5E2))
-   * [`x*y`](https://pymath-api-heroku.herokuapp.com/?expr=x*y) * 
-   [`sqrt(x^2 + y^2)`](https://pymath-api-heroku.herokuapp.com/?expr=sqrt(x%5E2%20%2B%20y%5E2))
+   * [`x*y`](https://pymath-api-heroku.herokuapp.com/?expr=x*y) 
+   * [`sqrt(x^2 + y^2)`](https://pymath-api-heroku.herokuapp.com/?expr=sqrt(x%5E2%20%2B%20y%5E2))
    * [`exp(y) * cos(x) + exp(x) * sin(y)`](https://pymath-api-heroku.herokuapp.com/?expr=exp(y)%20*%20cos(x)%20%2B%20exp(x)%20*%20sin(y))
  * Equalities: 
    * [`z^3 + z^2 + z^1 + z = 0`](https://pymath-api-heroku.herokuapp.com/?expr=z%5E3%20%2B%20z%5E2%20%2B%20z%5E1%20%2B%20z%20%3D%200)
@@ -61,6 +60,10 @@ The following are examples of expressions that are understood:
 It is also possible to construct matrices with [`Matrix([[1,2],[3,4]]) * t`](https://pymath-api-heroku.herokuapp.com/?expr=Matrix%28%5B%5B1%2C2%5D%2C%5B3%2C4%5D%5D%29%20*%20t). Accidently, you can also create multiple line plots with the following matrix: [`Matrix([x,x^2,x^3,x^4])`](https://pymath-api-heroku.herokuapp.com/?expr=Matrix%28%5Bx%2Cx%5E2%2Cx%5E3%2Cx%5E4%5D%29). Imaginairy numbers can be declared with ).
 
 There is no UI component yet to change the plot limits. However, it can be done manually by opening the console and entering `app.plot_xlim = app.plot_ylim = [-10,10]; app.plot()`.
+
+# Contributions
+
+Feel free to contribute! Also, if you have an idea, please let me know (or submit it as an issue on Github)!
 
 # Thanks to
 
