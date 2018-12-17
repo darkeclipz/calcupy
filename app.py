@@ -5,14 +5,18 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import proj3d, Axes3D
+import matplotlib
 
 from matplotlib import cm as cm
 
 from io import BytesIO
 import base64
 import numpy as np
-from sympy import symbols, sympify, latex, integrate, solve
+from sympy import symbols, sympify, latex, integrate, solve, Matrix
 from sympy.parsing.sympy_parser import parse_expr
+
+font = {'size': 12}
+matplotlib.rc('font', **font)
 
 @app.route('/')
 def index():
@@ -55,6 +59,34 @@ def diff2():
         print(e)
         return str(e), 400
 
+@app.route('/grad', methods=['POST'])
+def grad():
+    try:
+        print('grad: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        grad = Matrix([ps.diff(v) for v in ps.free_symbols])
+        return jsonify({ 'in': latex(ps), 'out': latex(grad) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/hessian', methods=['POST'])
+def hessian():
+    try:
+        print('hessian: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        symbols = [str(s) for s in ps.free_symbols]
+        symbols.sort()
+        x = symbols[0]
+        y = symbols[1]
+        hessian = Matrix([[ps.diff(x).diff(x), ps.diff(x).diff(y)],[ps.diff(y).diff(x), ps.diff(y).diff(y)]])
+        return jsonify({ 'in': latex(ps), 'out': latex(hessian), 'hessian': latex(hessian.det()) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
 @app.route('/integrate', methods=['POST'])
 def integration():
     try:
@@ -87,8 +119,8 @@ def plot():
 
         print('plot: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
-        fig = plt.figure(figsize=(5,5))
-
+        fig = plt.figure(figsize=(6.15,5))
+        fig.clf()
         if len(ps.free_symbols) == 1:
 
             X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 64)
@@ -112,8 +144,8 @@ def plot():
             Z = zs.reshape(X.shape)
 
             ax = fig.add_subplot(111, projection='3d')
-            surf = ax.plot_surface(X, Y, Z, cmap=cm.inferno)
-            #fig.colorbar(surf, shrink=0.5, aspect=5)
+            ax.plot_surface(X, Y, Z, cmap=cm.inferno)
+
             plt.title('Surface plot of ${}$'.format(latex(ps)))
             ax.set_xlabel(str(var[0]))
             ax.set_ylabel(str(var[1]))
@@ -132,6 +164,45 @@ def plot():
     except Exception as e:
         print(e)
         return str(e), 400
+
+@app.route('/cplot', methods=['POST'])
+def cplot():
+    try:
+
+        print('plot: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        var = [str(s) for s in ps.free_symbols]
+        var.sort()
+        if len(ps.free_symbols) != 2: 
+            raise ValueError('Contour plots requires a function of two variables.')
+
+        fig = plt.figure(figsize=(6.15,5))
+        fig.clf()
+
+        xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 32)
+        ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], 32)
+        X, Y = np.meshgrid(xs, ys)
+        zs = np.array([ps.subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+        Z = zs.reshape(X.shape)
+                    
+        ax = fig.add_subplot(111)
+        CS = ax.contourf(X, Y, Z, 24, cmap=cm.inferno)
+        fig.colorbar(CS, shrink=0.5, aspect=5)
+        plt.grid(ls='dashed', alpha=.5)
+        plt.title('Contour plot of ${}$'.format(latex(ps)))
+        ax.set_xlabel(str(var[0]))
+        ax.set_ylabel(str(var[1]))
+
+        data = BytesIO()
+        fig.savefig(data)
+        data.seek(0)
+        encoded_img = base64.b64encode(data.read())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
 
 @app.route('/test')
 def test():
