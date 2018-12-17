@@ -100,8 +100,8 @@ def plot():
 
             ax = fig.add_subplot(111)
             ax.plot(X,Y, c='purple', lw=2)
-            ax.set_xlabel('X')
-            ax.set_ylabel('Y')
+            ax.set_xlabel(str(list(ps.free_symbols)[0]))
+            ax.set_ylabel('f({})'.format(str(list(ps.free_symbols)[0])))
             plt.title('Line plot of ${}$'.format(latex(ps)))
             plt.grid(ls='dashed', alpha=.5)
         
@@ -120,9 +120,9 @@ def plot():
             surf = ax.plot_surface(X, Y, Z, cmap=cm.inferno)
             #fig.colorbar(surf, shrink=0.5, aspect=5)
             plt.title('Surface plot of ${}$'.format(latex(ps)))
-            ax.set_xlabel('X')
-            ax.set_ylabel('Y')
-            ax.set_zlabel('Z')
+            ax.set_xlabel(str(var[0]))
+            ax.set_ylabel(str(var[1]))
+            ax.set_zlabel('f({},{})'.format(str(var[0]), str(var[1])))
 
         else:
 
