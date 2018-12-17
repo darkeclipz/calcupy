@@ -234,9 +234,8 @@ var app = new Vue({
         readUrl: function() {
             let url = new URL(window.location.href);
             let expr = url.searchParams.get('expr');
-            if(expr) {
+            if(expr) 
                 this.expression = expr;
-            }
         },
         latex: function() {
             this.$nextTick(function() {
