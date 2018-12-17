@@ -82,10 +82,15 @@
                 <p>The following actions are available for this expression:</p>
                 <table class="table" v-if="variables.length > 0" style="margin-bottom: 0">
                     <tbody>
-                        <tr v-if="expression_equality">
+                        <tr v-if="variables.length > 0">
                             <td>Algebra</td>
                             <td>
-                                <button v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
+                                <button type="button" class="btn btn-primary" v-on:click="simplify">Simplify</button>
+                                <button type="button" class="btn btn-primary" v-on:click="expand(false)">Expand</button>
+                                <button type="button" class="btn btn-primary" v-on:click="expand(true)">Expand trig</button>
+                                <button type="button" class="btn btn-primary" v-on:click="factor">Factor</button>
+                                <button type="button" class="btn btn-primary" v-on:click="primitive">Primitive</button>
+                                <button v-if="expression_equality" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
                             </td>
                         </tr>
                         <tr v-if="variables.length > 0 && !expression_equality">
@@ -210,6 +215,74 @@
                         console.error(error);
                     }
                 );
+            },
+            simplify: function() {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr() };
+                http.post('/simplify', data, 
+                    (result) => {
+                        this.action_in = 'The simplification of $' + result.in + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        this.action_error = error;
+                        console.warn(error);
+                    });
+            },
+            expand: function(trig = false) {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr(), 'trig': trig };
+                http.post('/expand', data, 
+                    (result) => {
+                        this.action_in = 'The expansion of $' + result.in + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        this.action_error = error;
+                        console.warn(error);
+                    });
+            },
+            factor: function() {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr() };
+                http.post('/factor', data, 
+                    (result) => {
+                        this.action_in = 'The factorization of $' + result.in + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        this.action_error = error;
+                        console.warn(error);
+                    });
+            },
+            primitive: function() {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr() };
+                http.post('/primitive', data, 
+                    (result) => {
+                        this.action_in = 'The primitive of $' + result.in + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        this.action_error = error;
+                        console.warn(error);
+                    });
             },
             diff: function(to) {
                 this.action_show = true;

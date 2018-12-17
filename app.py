@@ -12,7 +12,7 @@ from matplotlib import cm as cm
 from io import BytesIO
 import base64
 import numpy as np
-from sympy import symbols, sympify, latex, integrate, solve, Matrix
+from sympy import symbols, sympify, latex, integrate, solve, solveset, Matrix, expand, factor, primitive, simplify
 from sympy.parsing.sympy_parser import parse_expr
 
 font = {'size': 12}
@@ -31,6 +31,50 @@ def expression():
         symbols = [str(s) for s in ps.free_symbols]
         symbols.sort()
         return jsonify({ 'expression': str(ps), 'expression_latex': latex(ps), 'variables': symbols })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/simplify', methods=['POST'])
+def simplifyexpr():
+    try:
+        print('simplify: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        return jsonify({ 'in': latex(ps), 'out': latex(expand(ps)) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/expand', methods=['POST'])
+def expandexpr():
+    try:
+        print('expand: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        return jsonify({ 'in': latex(ps), 'out': latex(expand(ps, trig=request.json['trig'])) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/factor', methods=['POST'])
+def factorexpr():
+    try:
+        print('factor: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        return jsonify({ 'in': latex(ps), 'out': latex(factor(ps)) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/primitive', methods=['POST'])
+def primitives():
+    try:
+        print('primitive: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        return jsonify({ 'in': latex(ps), 'out': latex(primitive(ps)) })
 
     except Exception as e:
         print(e)
