@@ -191,7 +191,6 @@ def cplot():
         ax = fig.add_subplot(111)
         CS = ax.contourf(X, Y, Z, 24, cmap=colormap)
         fig.colorbar(CS, shrink=0.5, aspect=5)
-        plt.grid(ls='dashed', alpha=.5)
         plt.title('Contour plot of ${}$'.format(latex(ps)))
         ax.set_xlabel(str(var[0]))
         ax.set_ylabel(str(var[1]))
