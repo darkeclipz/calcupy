@@ -12,7 +12,7 @@ from matplotlib import cm as cm
 from io import BytesIO
 import base64
 import numpy as np
-from sympy import symbols, sympify, latex, integrate, solve, solveset, Matrix, expand, factor, primitive, simplify
+from sympy import symbols, sympify, latex, integrate, solve, solveset, Matrix, expand, factor, primitive, simplify, factor_list
 from sympy.parsing.sympy_parser import parse_expr
 
 font = {'size': 12}
@@ -64,6 +64,17 @@ def factorexpr():
         print('factor: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         return jsonify({ 'in': latex(ps), 'out': latex(factor(ps)) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/factors', methods=['POST'])
+def factorlist():
+    try:
+        print('factor list: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        return jsonify({ 'in': latex(ps), 'out': latex(factor_list(ps)) })
 
     except Exception as e:
         print(e)

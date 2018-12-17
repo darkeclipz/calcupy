@@ -79,7 +79,7 @@
         <div id="actions" class="card border-secondary mb-3" v-if="variables.length > 0">
             <div class="card-header">Actions</div>
             <div class="card-body">
-                <p>The following actions are available for this expression:</p>
+                <p>The following actions are available for ${{expression_latex}}$:</p>
                 <table class="table" v-if="variables.length > 0" style="margin-bottom: 0">
                     <tbody>
                         <tr v-if="variables.length > 0">
@@ -89,7 +89,7 @@
                                 <button type="button" class="btn btn-primary" v-on:click="expand(false)">Expand</button>
                                 <button type="button" class="btn btn-primary" v-on:click="expand(true)">Expand trig</button>
                                 <button type="button" class="btn btn-primary" v-on:click="factor">Factor</button>
-                                <button type="button" class="btn btn-primary" v-on:click="primitive">Primitive</button>
+                                <button type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
                                 <button v-if="expression_equality || expression_inequality" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
                             </td>
                         </tr>
@@ -264,6 +264,23 @@
                 http.post('/factor', data, 
                     (result) => {
                         this.action_in = 'The factorization of $' + result.in + '$ is:';
+                        this.action_out = '$$' + result.out + '$$';
+                        app.$nextTick(function() {
+                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        });
+                    },
+                    (error) => {
+                        this.action_error = error;
+                        console.warn(error);
+                    });
+            },
+            factors: function() {
+                this.action_show = true;
+                this.resetAction();
+                let data = { 'expression': this.expr() };
+                http.post('/factors', data, 
+                    (result) => {
+                        this.action_in = 'The factors of $' + result.in + '$ are:';
                         this.action_out = '$$' + result.out + '$$';
                         app.$nextTick(function() {
                             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
