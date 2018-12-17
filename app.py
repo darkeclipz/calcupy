@@ -296,7 +296,7 @@ def gplot():
         dZx = [z[0] for z in dzs]
         dZy = [z[1] for z in dzs]
         dZz = [np.sqrt(np.dot(z,z)) for z in dzs]
-        quiv = plt.quiver(X,Y,dZx,dZy,dZz,cmap=colormap, pivot="tip")
+        quiv = plt.quiver(X,Y,dZx,dZy,dZz,cmap=colormap, pivot="middle")
         plt.colorbar(quiv, shrink=0.8)
 
         plt.title('Gradient plot of ${}$'.format(latex(ps)))
