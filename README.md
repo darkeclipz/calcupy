@@ -45,9 +45,11 @@ The following are examples of expressions that are understood:
  * One variable: 
    * [`1 / (1 + x^2)`](https://pymath-api-heroku.herokuapp.com/?expr=1%20%2F%20(1%20%2B%20x%5E2))
  * Two variables: 
-   * [`1 / (1 + x^2 + y^2)`](https://pymath-api-heroku.herokuapp.com/?expr=1%20%2F%20(1%20%2B%20x%5E2%20%2B%20y%5E2))
    * [`x*y`](https://pymath-api-heroku.herokuapp.com/?expr=x*y) 
+   * [`sin(1/2*x*y)`](https://pymath-api-heroku.herokuapp.com/?expr=sin(1%2F2*x*y))
+   * [`1 / (1 + x^2 + y^2)`](https://pymath-api-heroku.herokuapp.com/?expr=1%20%2F%20(1%20%2B%20x%5E2%20%2B%20y%5E2))
    * [`sqrt(x^2 + y^2)`](https://pymath-api-heroku.herokuapp.com/?expr=sqrt(x%5E2%20%2B%20y%5E2))
+   * [`(-3*x)/(x^2+y^2+1)`](https://pymath-api-heroku.herokuapp.com/?expr=(-3*x)%2F(x%5E2%2By%5E2%2B1))
    * [`exp(y) * cos(x) + exp(x) * sin(y)`](https://pymath-api-heroku.herokuapp.com/?expr=exp(y)%20*%20cos(x)%20%2B%20exp(x)%20*%20sin(y))
    * [`sqrt(4*x^2 + y^2) + cos(4*x) * y`](https://pymath-api-heroku.herokuapp.com/?expr=sqrt(4*x%5E2%20%2B%20y%5E2)%20%2B%20cos(4*x)*y)
  * Equalities: 
