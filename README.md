@@ -2,7 +2,7 @@
 
 Calculus powered graphical calculator with Python.
 
-The app has been deployed to [`https://calcupy.herokuapp.com/`](https://calcupy.herokuapp.com/). 
+The app has been deployed to [`https://calcupy.herokuapp.com/`](https://calcupy.herokuapp.com/). It may take some time initially, because the server has to wake up if it has not been used.
 
 # Usage
 
