@@ -250,8 +250,7 @@ var app = new Vue({
         getUrl: function() {
             let url = new URL(window.location.href);
             let expr = url.searchParams.get('expr');
-            if(expr) 
-                this.expression = expr;
+            return expr;
         },
         latex: function() {
             this.$nextTick(function() {
@@ -266,12 +265,14 @@ var app = new Vue({
                 'sqrt(4*x^2 + y^2) + cos(4*x) * y', 
                 '1 / (1 + x^2 + y^2)'
             ];
-            this.expression = expressions[Math.floor(Math.random()*expressions.length)];
+            this.set(expressions[Math.floor(Math.random()*expressions.length)]);
+        },
+        set: function(expr) {
+            this.expression = expr;
+            this.parse();
         },
         start: function() {
-            //app.rand();
-            app.getUrl();
-            app.parse();
+            this.set(this.getUrl());
         }
     }
 })
