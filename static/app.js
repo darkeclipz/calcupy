@@ -303,7 +303,13 @@ var app = new Vue({
         },
         setUrl: function() {
             if(!this.expression) window.history.pushState({page: "index"}, "reset", "/");
-            else window.history.pushState({page: "index"}, "expression", "?expr=" + encodeURIComponent(this.expression));
+            else window.history.pushState({page: "index"}, "expression", 
+                "?expr=" + encodeURIComponent(this.expression) 
+                + "&xlima=" + encodeURIComponent(this.plot_xlim[0])
+                + "&xlimb=" + encodeURIComponent(this.plot_xlim[1])
+                + "&ylima=" + encodeURIComponent(this.plot_ylim[0])
+                + "&ylimb=" + encodeURIComponent(this.plot_ylim[1])
+            );
         },
         getUrl: function() {
             let url = new URL(window.location.href);
@@ -330,7 +336,17 @@ var app = new Vue({
             this.expression = expr;
             this.parse();
         },
+        setLimits: function() {
+            let url = new URL(window.location.href);
+            let xlima = url.searchParams.get('xlima');
+            let xlimb = url.searchParams.get('xlimb');
+            let ylima = url.searchParams.get('ylima');
+            let ylimb = url.searchParams.get('ylimb');
+            if(xlima && xlimb) this.plot_xlim = [Number(xlima), Number(xlimb)]
+            if(ylima && ylimb) this.plot_ylim = [Number(ylima),Number(ylimb)]
+        },
         start: function() {
+            this.setLimits();
             this.set(this.getUrl());
         }
     }
