@@ -60,11 +60,11 @@
         <div id="info" class="card border-secondary mb-3" v-if="parsed && !expression_error">
             <div class="card-header">Expression</div>
             <div class="card-body">
-                <p class="card-text" v-if="expression">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
+                <p class="card-text" v-if="expression_latex">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
                     {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. 
                     <span v-if="is_matrix">This is a ${{dimension[0]}} \times {{dimension[1]}}$ matrix.</span>
                 </p>
-                <div id="loader" class="progress" v-if="!expression" style="height: 24px;">
+                <div id="loader" class="progress" v-if="!expression_latex" style="height: 24px;">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
                 </div>
             </div>
