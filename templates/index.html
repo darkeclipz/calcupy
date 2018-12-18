@@ -23,7 +23,7 @@
             <div class="card-header">Input</div>
             <div class="card-body">
                 <p class="card-text">Enter an expression to get started. </p>
-                <input id="function" placeholder="Enter an expression, i.e.: 2*x^2 - y^2" class="form-control" v-model.lazy="expression" v-on:change="parse"/>
+                <input id="function" placeholder="Example: 2*x^2 - y^2" class="form-control" v-model.lazy="expression" v-on:change="parse"/>
                 <div v-if="!expression">
                     <hr/>
                     <p>
@@ -57,13 +57,16 @@
             </div>
         </div>
 
-        <div id="info" class="card border-secondary mb-3" v-if="parsed">
+        <div id="info" class="card border-secondary mb-3" v-if="parsed && !expression_error">
             <div class="card-header">Expression</div>
             <div class="card-body">
-                <p class="card-text">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
+                <p class="card-text" v-if="expession">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
                     {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. 
                     <span v-if="is_matrix">This is a ${{dimension[0]}} \times {{dimension[1]}}$ matrix.</span>
                 </p>
+                <div id="loader" class="progress" v-if="!expression" style="height: 24px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                </div>
             </div>
         </div>
 

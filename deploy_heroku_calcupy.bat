@@ -1,0 +1,1 @@
+git push --mirror https://git.heroku.com/calcupy.git

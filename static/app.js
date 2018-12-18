@@ -34,6 +34,7 @@ var app = new Vue({
         parse: function() {
             this.reset(); 
             this.setUrl();
+            this.parsed = true;
             if(!this.expression) return;
             http.post('/expression', {'expression': this.expr() }, 
                 (result) => {
@@ -44,7 +45,7 @@ var app = new Vue({
                     app.is_inequality = result.is_inequality;
                     app.is_matrix = result.is_matrix;
                     app.is_square_matrix = app.is_matrix ? result.dimension[0] == result.dimension[1] : false;
-                    app.is_algebraic = !(app.is_constant || app.is_equality || app.is_inequality || app.is_matrix)
+                    app.is_algebraic = !(app.is_constant || app.is_equality || app.is_inequality || app.is_matrix);
                     app.dimension = result.dimension;
                     app.variables = result.variables;
                     app.parsed = true;
