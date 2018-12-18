@@ -5,6 +5,10 @@ body {
     font-size: 12pt;
 }
 
+.clickable-code code {
+    cursor: pointer;
+}
+
 .fade-out {
     opacity: 0 !important;
     

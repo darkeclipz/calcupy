@@ -28,7 +28,7 @@
                     <hr/>
                     <button class="btn btn-primary" v-on:click="set('')" type="button">Clear</button>
                 </div>
-                <div v-if="!expression" v-bind:class="[ !expression ? 'fade-in' : '' ]">
+                <div class="clickable-code" v-if="!expression" v-bind:class="[ !expression ? 'fade-in' : '' ]">
                     <hr/>
                     <p>
                         The following expressions are understood:
@@ -42,7 +42,7 @@
                             <li>Inequality: <code v-on:click="set('sqrt(x) > x')">sqrt(x) > x</code></li>
                             <li>Matrix: <code v-on:click="set('Matrix([1,2,3])')">Matrix([1,2,3])</code>, <code v-on:click="set('Matrix([[1,2],[3,4]])')">Matrix([[1,2],[3,4]])</code></li>
                             <li>Parametric: <code v-on:click="set('Matrix([sin(2*t), cos(3*t)])')">Matrix([sin(2*t), cos(3*t)])</code>, <code v-on:click="set('Matrix([cos(3*t), sin(3*t), t])')">Matrix([cos(3*t), sin(3*t), t])</code></li>
-                            <li>Random: <code v-on:click="rand">?</code></li>
+                            <li>Random: <code v-on:click="rand">I'll try</code></li>
                         </ul>
                     </p>
                     Take a tour along all the different features by clicking on the examples (except trig). Need more help? Look at the <a href="https://github.com/darkeclipz/mathpy#usage" target="_new">usage</a> or <a href="https://github.com/darkeclipz/mathpy#examples" target="_new">examples</a>.
