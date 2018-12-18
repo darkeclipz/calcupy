@@ -327,6 +327,53 @@ def gplot():
         print(e)
         return str(e), 400   
 
+@app.route('/pplot', methods=["POST"])
+def pplot():
+    try:
+
+        print('pplot: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        var = [str(s) for s in ps.free_symbols]
+        var.sort()
+        if len(ps.free_symbols) != 1: 
+            raise ValueError('Parametric plot requires a function of one variable.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Parametric plot requires a matrix.')
+        
+        a = 16
+        fig = plt.figure(figsize=(6.15,5))
+        fig.clf()
+
+        if ps.shape == (2, 1):
+            ax = fig.add_subplot(111)
+            ts = np.linspace(request.json['xlim'][0], request.json['xlim'][1], a**2)
+            Y = np.array([ps.subs('t', t).evalf() for t in ts]).astype('float')
+            xs = [x[0] for x in Y]
+            ys = [x[1] for x in Y]
+            plt.plot(xs, ys, c="purple", lw=3)
+            plt.grid(ls='dashed',alpha=0.5)
+        elif ps.shape == (3, 1):
+            ts = np.linspace(request.json['xlim'][0], request.json['xlim'][1], a**2)
+            Y = np.array([ps.subs('t', t).evalf() for t in ts]).astype('float')
+            xs = [x[0] for x in Y]
+            ys = [x[1] for x in Y]
+            zs = [x[2] for x in Y]
+            ax = fig.add_subplot(111, projection='3d')
+            plt.plot(xs, ys, zs, c="purple")
+        else:
+            raise ValueError('Parametric plot requires a 3x1 or 2x1 matrix.')
+
+        plt.title('Parametric plot of $M$')
+
+        data = BytesIO()
+        fig.savefig(data)
+        data.seek(0)
+        encoded_img = base64.b64encode(data.read())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })  
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400  
 
 @app.route('/test')
 def test():

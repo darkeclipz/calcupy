@@ -89,7 +89,7 @@
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="cplot" type="button">Contour</button>
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="gplot" type="button">Gradient</button>
                     <button v-if="variables.length == 1 && is_matrix && dimension[1] == 1 && (dimension[0] == 2 || dimension[0] == 3)" class="btn btn-primary" v-on:click="pplot" type="button">Parametric</button>
-                    <button v-if="variables.length == 0 && is_square_matrix && dimension[0] == 2" class="btn btn-primary" v-on:click="pplot" type="button">Transformation</button>
+                    <button v-if="variables.length == 0 && is_square_matrix && dimension[0] == 2" class="btn btn-primary" v-on:click="tplot" type="button">Transformation</button>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
                                 <button type="button" class="btn btn-primary" v-on:click="expand(false)">Expand</button>
                                 <button type="button" class="btn btn-primary" v-on:click="expand(true)">Expand trig</button>
                                 <button type="button" class="btn btn-primary" v-on:click="factor">Factor</button>
-                                <button v-if="!(is_equality || is_inequality)" type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
+                                <button v-if="!(is_equality || is_inequality || is_matrix)" type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
                                 <button v-if="is_equality || is_inequality" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
                             </td>
                         </tr>
@@ -130,9 +130,9 @@
                             <td>
                                 <button type="button" class="btn btn-primary">Solve</button>
                                 <button type="button" class="btn btn-primary">$M^\textrm{T}$</button>
-                                <button type="button" class="btn btn-primary">$M^{-1}$</button>
-                                <button type="button" class="btn btn-primary">$\textrm{det}(M)$</button>
-                                <button type="button" class="btn btn-primary">Eigen</button>
+                                <button v-if="is_square_matrix" type="button" class="btn btn-primary">$M^{-1}$</button>
+                                <button v-if="is_square_matrix" type="button" class="btn btn-primary">$\textrm{det}(M)$</button>
+                                <button v-if="is_square_matrix" type="button" class="btn btn-primary">Eigen</button>
                             </td>
                         </tr>
                     </tbody>

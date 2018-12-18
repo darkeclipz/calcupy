@@ -203,7 +203,11 @@ var app = new Vue({
             );
         },
         pplot: function() {
-
+            this.resetPlot();
+            http.post('/pplot', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
+                (result) => { app.plot_base64 = result.img; },
+                (error) => { console.warn(error); app.plot_error = error; }
+            );
         },
         tplot: function() {
             this.resetPlot();
