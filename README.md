@@ -72,6 +72,8 @@ The following are examples of expressions that are understood:
  * Parametric:
    * [`Matrix([sin(2*t), cos(3*t)])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bsin(2*t)%2C%20cos(3*t)%5D))
    * [`Matrix([cos(3*t), sin(3*t), t])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(3*t)%2C%20sin(3*t)%2C%20t%5D))
+   * [`Matrix([cos(13*t), 0, sin(7*t)])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(13*t)%2C%200%2C%20sin(7*t)%5D)&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
+   * [`Matrix([cos(5*t), 0, t]) `](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(5*t)%2C%200%2C%20t%5D)%20&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
 
 There is no UI component yet to change the plot limits. However, it can be done manually by opening the console and entering `app.plot_xlim = app.plot_ylim = [-10,10]; app.plot()`.
 
