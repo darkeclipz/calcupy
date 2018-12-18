@@ -26,7 +26,6 @@ var app = new Vue({
     },
     methods: {
         expr: function() {
-
             let castedExpression = replaceAll(this.expression, '[\\^]', '**');
             castedExpression = replaceAll(castedExpression, 'abs', 'Abs');
             return castedExpression;
@@ -34,8 +33,8 @@ var app = new Vue({
         parse: function() {
             this.reset(); 
             this.setUrl();
-            this.parsed = true;
             if(!this.expression) return;
+            this.parsed = true;
             http.post('/expression', {'expression': this.expr() }, 
                 (result) => {
                     app.expression_parse = result.expression;
