@@ -359,7 +359,7 @@ def pplot():
             ys = [x[1] for x in Y]
             zs = [x[2] for x in Y]
             ax = fig.add_subplot(111, projection='3d')
-            plt.plot(xs, ys, zs, c="purple")
+            plt.plot(xs, ys, zs, c="purple",lw=3)
             ax.set_xlabel('${}$'.format(latex(ps[0])))
             ax.set_ylabel('${}$'.format(latex(ps[1])))
             ax.set_zlabel('${}$'.format(latex(ps[2])))
