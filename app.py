@@ -195,10 +195,10 @@ def plot():
         fig.clf()
         if len(ps.free_symbols) == 1:
 
-            X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 64)
+            X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 256)
             Y = [ps.subs(list(ps.free_symbols)[0], x) for x in X]
             ax = fig.add_subplot(111)
-            ax.plot(X,Y, c='purple', lw=2)
+            ax.plot(X,Y, c='purple', lw=3)
             ax.set_xlabel(str(list(ps.free_symbols)[0]))
             ax.set_ylabel('f({})'.format(str(list(ps.free_symbols)[0])))
             if '\\' not in latex(ps):
