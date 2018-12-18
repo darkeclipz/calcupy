@@ -259,7 +259,7 @@ var app = new Vue({
             this.resetAction();
             http.post('/eigen', { 'expression': this.expr(), 'var': to }, 
                 (result) => {
-                    this.action_in = 'The eigen vectors of M = $' + result.in + '$ are:';
+                    this.action_in = 'The eigen vectors of $M = ' + result.in + '$ are:';
                     this.action_out = '$$' + result.vectors + '$$ with the eigen values: $'+ result.values +'$.';
                     this.latex();
                 },
