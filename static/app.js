@@ -53,7 +53,7 @@ var app = new Vue({
                     app.variables = result.variables;
                     app.parsed = true;
                     this.latex();
-                    if(app.is_matrix && app.variables.length == 1 && (app.dimension[0] == 2 || app.dimension[0] == 3))
+                    if(app.is_matrix && app.variables.length == 1 && (app.dimension[0] == 2 || app.dimension[0] == 3) && app.dimension[1] == 1)
                         app.pplot();
                     else if( app.is_square_matrix && app.dimension[0] == 2)
                         app.tplot();
