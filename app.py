@@ -347,14 +347,14 @@ def pplot():
         if ps.shape == (2, 1):
             ax = fig.add_subplot(111)
             ts = np.linspace(request.json['xlim'][0], request.json['xlim'][1], a**2)
-            Y = np.array([ps.subs('t', t).evalf() for t in ts]).astype('float')
+            Y = np.array([ps.subs(var[0], t).evalf() for t in ts]).astype('float')
             xs = [x[0] for x in Y]
             ys = [x[1] for x in Y]
             plt.plot(xs, ys, c="purple", lw=3)
             plt.grid(ls='dashed',alpha=0.5)
         elif ps.shape == (3, 1):
             ts = np.linspace(request.json['xlim'][0], request.json['xlim'][1], a**2)
-            Y = np.array([ps.subs('t', t).evalf() for t in ts]).astype('float')
+            Y = np.array([ps.subs(var[0], t).evalf() for t in ts]).astype('float')
             xs = [x[0] for x in Y]
             ys = [x[1] for x in Y]
             zs = [x[2] for x in Y]
