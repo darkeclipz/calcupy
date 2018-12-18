@@ -378,6 +378,17 @@ def pplot():
         print(e)
         return str(e), 400  
 
+@app.route('/tplot', methods=["POST"])
+def tplot():
+    try:
+
+        print('tplot: {}'.format(request.json))
+        raise ValueError('not implemented.')
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400  
+
 @app.route('/test')
 def test():
     return "This is a test endpoint!"

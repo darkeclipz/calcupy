@@ -217,7 +217,10 @@ var app = new Vue({
         },
         tplot: function() {
             this.resetPlot();
-            console.warn('tplot not implemented');
+            http.post('/tplot', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
+                (result) => { app.plot_base64 = result.img; },
+                (error) => { console.warn(error); app.plot_error = error; }
+            );
         },
         actionError: function(e) {
             this.action_error = e;
