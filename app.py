@@ -389,6 +389,72 @@ def tplot():
         print(e)
         return str(e), 400  
 
+@app.route('/transpose', methods=['POST'])
+def la_transpose():
+    try:
+        print('transpose: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Requires a matrix.')
+        ps = parse_expr(request.json['expression'], locals())
+        var = request.json['var']
+        return jsonify({ 'in': latex(ps), 'out': latex(ps.T), 'var': var })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/inverse', methods=['POST'])
+def la_inverse():
+    try:
+        print('inverse: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Requires a square matrix.')
+        ps = parse_expr(request.json['expression'], locals())
+        var = request.json['var']
+        return jsonify({ 'in': latex(ps), 'out': latex(ps.inv()), 'var': var })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/det', methods=['POST'])
+def la_det():
+    try:
+        print('det: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Requires a square matrix.')
+        ps = parse_expr(request.json['expression'], locals())
+        var = request.json['var']
+        return jsonify({ 'in': latex(ps), 'out': latex(ps.det()), 'var': var })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/eigen', methods=['POST'])
+def la_eigen():
+    try:
+        print('det: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Requires a square matrix.')
+        ps = parse_expr(request.json['expression'], locals())
+        var = request.json['var']
+        return jsonify({ 'in': latex(ps), 'vectors': latex([v[2][0][0] for v in ps.eigenvects()]), 'values': latex(ps.eigenvals()) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
 @app.route('/test')
 def test():
     return "This is a test endpoint!"

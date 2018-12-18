@@ -222,6 +222,50 @@ var app = new Vue({
                 (error) => { console.warn(error); app.plot_error = error; }
             );
         },
+        transpose: function(to) {
+            this.resetAction();
+            http.post('/transpose', { 'expression': this.expr(), 'var': to }, 
+                (result) => {
+                    this.action_in = 'The transposed matrix of $M = ' + result.in + '$ is:';
+                    this.action_out = '$$M^\\textrm{T} = ' + result.out + '$$';
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        inverse: function(to) {
+            this.resetAction();
+            http.post('/inverse', { 'expression': this.expr(), 'var': to }, 
+                (result) => {
+                    this.action_in = 'The inverse of $M = ' + result.in + '$ is:';
+                    this.action_out = '$$M^{-1} = ' + result.out + '$$';
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        det: function(to) {
+            this.resetAction();
+            http.post('/det', { 'expression': this.expr(), 'var': to }, 
+                (result) => {
+                    this.action_in = 'The determinant of $ M = ' + result.in + '$ is:';
+                    this.action_out = '$$\\textrm{det}(M) = ' + result.out + '$$';
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        eigen: function(to) {
+            this.resetAction();
+            http.post('/eigen', { 'expression': this.expr(), 'var': to }, 
+                (result) => {
+                    this.action_in = 'The eigen vectors of M = $' + result.in + '$ are:';
+                    this.action_out = '$$' + result.vectors + '$$ with the eigen values: $'+ result.values +'$.';
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
         actionError: function(e) {
             this.action_error = e;
             console.warn(error);

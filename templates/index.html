@@ -131,14 +131,13 @@
                                 <button v-if="variables.length == 2 && (is_algebraic || is_square_matrix)" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
                             </td>
                         </tr>
-                        <tr v-if="is_matrix && false">
+                        <tr v-if="is_matrix">
                             <td>Linear algebra</td>
                             <td>
-                                <button type="button" class="btn btn-primary">Solve</button>
-                                <button type="button" class="btn btn-primary">$M^\textrm{T}$</button>
-                                <button v-if="is_square_matrix" type="button" class="btn btn-primary">$M^{-1}$</button>
-                                <button v-if="is_square_matrix" type="button" class="btn btn-primary">$\textrm{det}(M)$</button>
-                                <button v-if="is_square_matrix" type="button" class="btn btn-primary">Eigen</button>
+                                <button type="button" class="btn btn-primary" v-on:click="transpose">$M^\textrm{T}$</button>
+                                <button v-if="is_square_matrix" type="button" class="btn btn-primary" v-on:click="inverse">$M^{-1}$</button>
+                                <button v-if="is_square_matrix" type="button" class="btn btn-primary" v-on:click="det">$\textrm{det}(M)$</button>
+                                <button v-if="is_square_matrix" type="button" class="btn btn-primary" v-on:click="eigen">Eigen</button>
                             </td>
                         </tr>
                     </tbody>
