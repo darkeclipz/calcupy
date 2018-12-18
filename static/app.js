@@ -49,11 +49,13 @@ var app = new Vue({
                     app.variables = result.variables;
                     app.parsed = true;
                     this.latex();
-                    if( (app.variables.length == 2 || app.variables.length == 1) 
-                    && (app.is_algebraic || (app.is_matrix && app.variables.length == 1))) 
-                        app.plot();
+                    if(app.is_matrix && app.variables.length == 1 && (app.dimension[0] == 2 || app.dimension[0] == 3))
+                        app.pplot();
                     else if( app.is_square_matrix && app.dimension[0] == 2)
                         app.tplot();
+                    else if( (app.variables.length == 2 || app.variables.length == 1) 
+                    && (app.is_algebraic || (app.is_matrix && app.variables.length == 1))) 
+                        app.plot();
                 },
                 (error) => { console.log(error); app.expression_error = true; }
             );
@@ -211,6 +213,7 @@ var app = new Vue({
         },
         tplot: function() {
             this.resetPlot();
+            console.warn('tplot not implemented');
         },
         actionError: function(e) {
             this.action_error = e;
@@ -267,7 +270,8 @@ var app = new Vue({
                 'sin(1/2*x*y)', 
                 'exp(y) * cos(x) + exp(x) * sin(y)', 
                 'sqrt(4*x^2 + y^2) + cos(4*x) * y', 
-                '1 / (1 + x^2 + y^2)'
+                '1 / (1 + x^2 + y^2)',
+                'Matrix([cos(4*t),sin(4*t),t])'
             ];
             this.set(expressions[Math.floor(Math.random()*expressions.length)]);
         },

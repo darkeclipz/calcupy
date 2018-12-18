@@ -341,7 +341,7 @@ def pplot():
             raise ValueError('Parametric plot requires a matrix.')
         
         a = 16
-        fig = plt.figure(figsize=(6.15,5))
+        fig = plt.figure(figsize=(5,5))
         fig.clf()
 
         if ps.shape == (2, 1):
@@ -360,10 +360,13 @@ def pplot():
             zs = [x[2] for x in Y]
             ax = fig.add_subplot(111, projection='3d')
             plt.plot(xs, ys, zs, c="purple")
+            ax.set_xlabel('${}$'.format(latex(ps[0])))
+            ax.set_ylabel('${}$'.format(latex(ps[1])))
+            ax.set_zlabel('${}$'.format(latex(ps[2])))
         else:
             raise ValueError('Parametric plot requires a 3x1 or 2x1 matrix.')
 
-        plt.title('Parametric plot of $M$')
+        plt.title('Parametric plot of $\\left< {} \\right>$'.format( ', '.join([latex(p) for p in ps] )))
 
         data = BytesIO()
         fig.savefig(data)
