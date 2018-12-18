@@ -28,7 +28,7 @@
                     <hr/>
                     <button class="btn btn-primary" v-on:click="set('')" type="button">Clear</button>
                 </div>
-                <div v-if="!expression">
+                <div v-if="!expression" v-bind:class="[ !expression ? 'fade-in' : '' ]">
                     <hr/>
                     <p>
                         The following expressions are understood:
@@ -131,7 +131,7 @@
                                 <button v-if="variables.length == 2 && (is_algebraic || is_square_matrix)" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
                             </td>
                         </tr>
-                        <tr v-if="is_matrix">
+                        <tr v-if="is_matrix && false">
                             <td>Linear algebra</td>
                             <td>
                                 <button type="button" class="btn btn-primary">Solve</button>
