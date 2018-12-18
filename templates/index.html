@@ -22,8 +22,21 @@
         <div class="card border-primary mb-3">
             <div class="card-header">Input</div>
             <div class="card-body">
-                <p class="card-text">Enter an expression to get started. Need help? Look at the <a href="https://github.com/darkeclipz/mathpy#usage" target="_new">usage</a> or <a href="https://github.com/darkeclipz/mathpy#examples" target="_new">examples</a>.</p>
-                <input id="function" placeholder="Enter an expression: x + y" class="form-control" v-model.lazy="expression" v-on:change="parse"/>
+                <p class="card-text">Enter an expression to get started. </p>
+                <input id="function" placeholder="Enter an expression, i.e.: 2*x^2 - y^2" class="form-control" v-model.lazy="expression" v-on:change="parse"/>
+                <div v-if="!expression">
+                    <hr/>
+                    <p>
+                        The following expressions are understood:
+                        <ul>
+                            <li>Functions: <code>x^2</code>, <code>exp(x)</code>, <code>log(x)</code></li>
+                            <li>Example 2</li>
+                            <li>Example 3</li>
+                            <li>Example 4</li>
+                        </ul>
+                    </p>
+                    Need more help? Look at the <a href="https://github.com/darkeclipz/mathpy#usage" target="_new">usage</a> or <a href="https://github.com/darkeclipz/mathpy#examples" target="_new">examples</a>.
+                </div>
             </div>
         </div>
 
@@ -46,7 +59,6 @@
                 <p class="card-text">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
                     {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. 
                     <span v-if="is_matrix">This is a ${{dimension[0]}} \times {{dimension[1]}}$ matrix.</span>
-                    <span v-if="variables.length == 0">There is no action available.</span>
                 </p>
             </div>
         </div>
@@ -56,6 +68,7 @@
             <div class="card-body">
                 <div class="text-center" v-if="plot_base64">
                     <img id="plot" :src="plot_base64" v-bind:class="[ plot_base64 ? 'fade-in' : '' ]"/>
+                    
                 </div>
                 <div id="loader" class="progress" v-if="!plot_base64 && !plot_error" style="height: 24px;">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
@@ -63,20 +76,23 @@
                 <div v-if="plot_error">Something went wrong while plotting:<br/><pre>{{plot_error}}</pre></span><br/>
                     <button v-if="variables.length == 1" class="btn btn-primary" v-on:click="plot" type="button" >Try again</button>
                 </div>
-                <div v-if="variables.length == 2">
+                <div v-if="!is_constant || (is_square_matrix && dimension[0] == 2)">
                     <hr/>
-                    <button class="btn btn-primary" v-on:click="plot" type="button">Surface</button>
-                    <button class="btn btn-primary" v-on:click="cplot" type="button">Contour</button>
-                    <button class="btn btn-primary" v-on:click="gplot" type="button">Gradient</button>
+                    <button v-if="variables.length == 1" class="btn btn-primary" v-on:click="plot" type="button">Line</button>
+                    <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="plot" type="button">Surface</button>
+                    <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="cplot" type="button">Contour</button>
+                    <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="gplot" type="button">Gradient</button>
+                    <button v-if="variables.length == 1 && is_matrix && dimension[1] == 1 && (dimension[0] == 2 || dimension[0] == 3)" class="btn btn-primary" v-on:click="pplot" type="button">Parametric</button>
+                    <button v-if="variables.length == 0 && is_square_matrix && dimension[0] == 2" class="btn btn-primary" v-on:click="pplot" type="button">Transformation</button>
                 </div>
             </div>
         </div>
 
-        <div id="actions" class="card border-secondary mb-3" v-if="variables.length > 0">
+        <div id="actions" class="card border-secondary mb-3" v-if="variables.length > 0 || is_matrix">
             <div class="card-header">Actions</div>
             <div class="card-body">
                 <p>The following actions are available for ${{expression_latex}}$:</p>
-                <table class="table" v-if="variables.length > 0" style="margin-bottom: 0">
+                <table class="table" style="margin-bottom: 0">
                     <tbody>
                         <tr v-if="variables.length > 0">
                             <td>Algebra</td>
@@ -90,7 +106,7 @@
                             </td>
                         </tr>
                         <tr v-if="variables.length > 0 && !is_equality && !is_inequality">
-                            <td style="width: 100px;">Calculus</td>
+                            <td style="width: 140px;">Calculus</td>
                             <td>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="diff(variables[0])">$\textrm{d} / \textrm{d}{{variables[0]}}$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="diff2(variables[0])">$\textrm{d}^2 / \textrm{d}{{variables[0]}}^2$</button>
@@ -99,8 +115,18 @@
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0])">$\int$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '0', 'T')">$\int_0^T$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '-oo', 'oo')">$\int_{-\infty}^{+\infty}$</button>
-                                <button v-if="variables.length > 1" type="button" class="btn btn-primary" v-on:click="grad">$\nabla f$</button>
-                                <button v-if="variables.length == 2" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
+                                <button v-if="variables.length > 1 && is_algebraic" type="button" class="btn btn-primary" v-on:click="grad">$\nabla f$</button>
+                                <button v-if="variables.length == 2 && (is_algebraic || is_square_matrix)" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
+                            </td>
+                        </tr>
+                        <tr v-if="is_matrix">
+                            <td>Linear algebra</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">Solve</button>
+                                <button type="button" class="btn btn-primary">$M^\textrm{T}$</button>
+                                <button type="button" class="btn btn-primary">$M^{-1}$</button>
+                                <button type="button" class="btn btn-primary">$\textrm{det}(M)$</button>
+                                <button type="button" class="btn btn-primary">Eigen</button>
                             </td>
                         </tr>
                     </tbody>

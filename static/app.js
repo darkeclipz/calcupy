@@ -6,9 +6,11 @@ var app = new Vue({
         expression_parsed: "",
         expression_latex: "",
         expression_error: false,
+        is_algebraic: false,
         is_equality: false,
         is_inequality: false,
         is_matrix: false,
+        is_square_matrix: false,
         dimension: [0, 0],
         variables: [],
         parsed: false,
@@ -41,12 +43,17 @@ var app = new Vue({
                     app.is_equality = result.is_equality;
                     app.is_inequality = result.is_inequality;
                     app.is_matrix = result.is_matrix;
+                    app.is_square_matrix = app.is_matrix ? result.dimension[0] == result.dimension[1] : false;
+                    app.is_algebraic = !(app.is_constant || app.is_equality || app.is_inequality || app.is_matrix)
                     app.dimension = result.dimension;
                     app.variables = result.variables;
                     app.parsed = true;
                     this.latex();
-                    if((app.variables.length == 2 || app.variables.length == 1) && !app.is_equality && !app.is_inequality)
+                    if( (app.variables.length == 2 || app.variables.length == 1) 
+                    && (app.is_algebraic || (app.is_matrix && app.variables.length == 1))) 
                         app.plot();
+                    else if( app.is_square_matrix && app.dimension[0] == 2)
+                        app.tplot();
                 },
                 (error) => { console.log(error); app.expression_error = true; }
             );
@@ -195,15 +202,23 @@ var app = new Vue({
                 (error) => { console.warn(error); app.plot_error = error; }
             );
         },
+        pplot: function() {
+
+        },
+        tplot: function() {
+            this.resetPlot();
+        },
         actionError: function(e) {
             this.action_error = e;
             console.warn(error);
         },
         reset: function() {
             this.expression_error = false;
+            this.is_algebraic = false;
             this.is_equality = false;
             this.is_inequality = false;
             this.is_matrix = false,
+            this.is_square_matrix = false,
             this.dimension = [0, 0],
             this.parsed = false;
             this.expression_parsed = false;
@@ -229,9 +244,10 @@ var app = new Vue({
             this.plot_error = "";
         },
         setUrl: function() {
-            window.history.pushState({page: "index"}, "expression", "?expr=" + encodeURIComponent(this.expression));
+            if(!this.expression) window.history.pushState({page: "index"}, "reset", "/");
+            else window.history.pushState({page: "index"}, "expression", "?expr=" + encodeURIComponent(this.expression));
         },
-        readUrl: function() {
+        getUrl: function() {
             let url = new URL(window.location.href);
             let expr = url.searchParams.get('expr');
             if(expr) 
@@ -251,17 +267,21 @@ var app = new Vue({
                 '1 / (1 + x^2 + y^2)'
             ];
             this.expression = expressions[Math.floor(Math.random()*expressions.length)];
+        },
+        start: function() {
+            //app.rand();
+            app.getUrl();
+            app.parse();
         }
     }
 })
 
-app.rand();
-app.readUrl();
-app.parse();
+app.start();
 
 window.onpopstate = function(e) {
     if(e.state) {
-        app.readUrl();
+        document.getElementById("function").blur();
+        app.getUrl();
         app.parse();
     }
 }
