@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import proj3d, Axes3D
 import matplotlib
 
-from matplotlib import cm as cm
+from matplotlib import cm
 
 from io import BytesIO
 import base64
@@ -30,7 +30,20 @@ def expression():
         ps = parse_expr(request.json['expression'], locals())
         symbols = [str(s) for s in ps.free_symbols]
         symbols.sort()
-        return jsonify({ 'expression': str(ps), 'expression_latex': latex(ps), 'variables': symbols })
+        return jsonify({
+            'expression': str(ps),
+            'expression_latex': latex(ps),
+            'variables': symbols,
+            'is_constant':   'Integer' in str(type(ps)) 
+                          or 'Float' in str(type(ps))
+                          or 'Rational' in str(type(ps)),
+            'is_equality':   'Equality' in str(type(ps)),
+            'is_inequality': 'Inequality' in str(type(ps)) 
+                          or 'Greater' in str(type(ps)) 
+                          or 'Less' in str(type(ps)),
+            'is_matrix':     'Matrix' in str(type(ps)),
+            'dimension':     list(ps.shape) if 'Matrix' in str(type(ps)) else [0, 0]
+        })
 
     except Exception as e:
         print(e)

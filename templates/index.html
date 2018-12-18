@@ -44,7 +44,9 @@
             <div class="card-header">Expression</div>
             <div class="card-body">
                 <p class="card-text">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
-                    {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. <span v-if="variables.length == 0">There is no action available.</span>
+                    {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. 
+                    <span v-if="is_matrix">This is a ${{dimension[0]}} \times {{dimension[1]}}$ matrix.</span>
+                    <span v-if="variables.length == 0">There is no action available.</span>
                 </p>
             </div>
         </div>
@@ -59,7 +61,7 @@
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
                 </div>
                 <div v-if="plot_error">Something went wrong while plotting:<br/><pre>{{plot_error}}</pre></span><br/>
-                    <button class="btn btn-primary" v-on:click="plot" type="button" >Try again</button>
+                    <button v-if="variables.length == 1" class="btn btn-primary" v-on:click="plot" type="button" >Try again</button>
                 </div>
                 <div v-if="variables.length == 2">
                     <hr/>
@@ -83,11 +85,11 @@
                                 <button type="button" class="btn btn-primary" v-on:click="expand(false)">Expand</button>
                                 <button type="button" class="btn btn-primary" v-on:click="expand(true)">Expand trig</button>
                                 <button type="button" class="btn btn-primary" v-on:click="factor">Factor</button>
-                                <button v-if="!(expression_equality || expression_inequality)" type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
-                                <button v-if="expression_equality || expression_inequality" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
+                                <button v-if="!(is_equality || is_inequality)" type="button" class="btn btn-primary" v-on:click="factors">Factors</button>
+                                <button v-if="is_equality || is_inequality" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="solveFor(v)">Solve for ${{v}}$</button>
                             </td>
                         </tr>
-                        <tr v-if="variables.length > 0 && !expression_equality && !expression_inequality">
+                        <tr v-if="variables.length > 0 && !is_equality && !is_inequality">
                             <td style="width: 100px;">Calculus</td>
                             <td>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="diff(variables[0])">$\textrm{d} / \textrm{d}{{variables[0]}}$</button>

@@ -6,8 +6,10 @@ var app = new Vue({
         expression_parsed: "",
         expression_latex: "",
         expression_error: false,
-        expression_equality: false,
-        expression_inequality: false,
+        is_equality: false,
+        is_inequality: false,
+        is_matrix: false,
+        dimension: [0, 0],
         variables: [],
         parsed: false,
         plot_show: false,
@@ -25,16 +27,6 @@ var app = new Vue({
 
             let castedExpression = replaceAll(this.expression, '[\\^]', '**');
             castedExpression = replaceAll(castedExpression, 'abs', 'Abs');
-
-            if(castedExpression.indexOf('>') >= 0 || castedExpression.indexOf('<') >= 0)
-                this.expression_inequality = true;
-
-            if(!this.expression_inequality && castedExpression.indexOf('=') >= 0) {
-                let parts = castedExpression.split('=');
-                castedExpression = 'Eq(' + parts[0] + ',' + parts[1] + ')';
-                this.expression_equality = true;
-            }
-
             return castedExpression;
         },
         parse: function() {
@@ -45,10 +37,15 @@ var app = new Vue({
                 (result) => {
                     app.expression_parse = result.expression;
                     app.expression_latex = replaceAll(result.expression_latex, 'frac', 'dfrac');
+                    app.is_constant = result.is_constant;
+                    app.is_equality = result.is_equality;
+                    app.is_inequality = result.is_inequality;
+                    app.is_matrix = result.is_matrix;
+                    app.dimension = result.dimension;
                     app.variables = result.variables;
                     app.parsed = true;
                     this.latex();
-                    if((app.variables.length == 2 || app.variables.length == 1) && !app.expression_equality && !app.expression_inequality)
+                    if((app.variables.length == 2 || app.variables.length == 1) && !app.is_equality && !app.is_inequality)
                         app.plot();
                 },
                 (error) => { console.log(error); app.expression_error = true; }
@@ -170,7 +167,7 @@ var app = new Vue({
             http.post('/solvefor', { 'expression': this.expr(), 'var': v }, 
                 (result) => {
                     this.action_in = 'Solving $' + result.in + '$ for $' + result.var + '$ gives:';
-                    append_var = !app.expression_inequality ? result.var + '=' : '';
+                    append_var = !app.is_inequality ? result.var + '=' : '';
                     this.action_out = '$$' + append_var + result.out + '$$';
                     this.latex();
                 },
@@ -204,8 +201,10 @@ var app = new Vue({
         },
         reset: function() {
             this.expression_error = false;
-            this.expression_equality = false;
-            this.expression_inequality = false;
+            this.is_equality = false;
+            this.is_inequality = false;
+            this.is_matrix = false,
+            this.dimension = [0, 0],
             this.parsed = false;
             this.expression_parsed = false;
             this.expression_latex = false;
