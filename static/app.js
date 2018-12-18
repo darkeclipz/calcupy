@@ -28,6 +28,10 @@ var app = new Vue({
         expr: function() {
             let castedExpression = replaceAll(this.expression, '[\\^]', '**');
             castedExpression = replaceAll(castedExpression, 'abs', 'Abs');
+            if(castedExpression.indexOf('=') >= 0) {
+                let parts = castedExpression.split('=');
+                castedExpression = 'Eq(' + parts[0] + ', ' + parts[1] + ')';
+            }
             return castedExpression;
         },
         parse: function() {

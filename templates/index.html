@@ -24,22 +24,28 @@
             <div class="card-body">
                 <p class="card-text">Enter an expression to get started. </p>
                 <input id="function" placeholder="Example: 2*x^2 - y^2" class="form-control" v-model.lazy="expression" v-on:change="parse"/>
+                <div v-if="expression" class="text-right">
+                    <hr/>
+                    <button class="btn btn-primary" v-on:click="set('')" type="button">Clear</button>
+                </div>
                 <div v-if="!expression">
                     <hr/>
                     <p>
                         The following expressions are understood:
                         <ul>
-                            <li>Expressions: <code>2*x^2+y</code></li> 
-                            <li>Functions: <code>sqrt</code>, <code>exp</code>, <code>log</code></li>
-                            <li>Trig: <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>csc</code>, <code>sec</code>, <code>cot</code>, <code>asin</code>, <code>acos</code>, <code>atan</code>, <code>sinh</code>, <code>cosh</code>, <code>tanh</code></li>
-                            <li>Equality: <code>a*x^2 + b*x + c = 0</code></li>
-                            <li>Inequality: <code>sqrt(x) > x</code></li>
-                            <li>Matrix: <code>Matrix([1,2,3])</code>, <code>Matrix([[1,2],[3,4]])</code></li>
-                            <li>Parametric: <code>Matrix([sin(2*t), cos(3*t)])</code>, <code>Matrix([cos(3*t), sin(3*t), t])</code></li>
+                            <li>Expressions: <code v-on:click="set('x*y')">x*y</code>, <code v-on:click="set('2*x^2+y')">2*x^2+y</code>, <code v-on:click="set('sqrt(x^2 + y^2 + 1)')">sqrt(x^2 + y^2 + 1)</code>, <code v-on:click="set('(-3*x)/(x^2+y^2+1)')">(-3*x)/(x^2+y^2+1)</code></li> 
+                            <li>Functions: <code v-on:click="set('sqrt(x)')">sqrt</code>, <code v-on:click="set('exp(x)')">exp</code>, <code v-on:click="set('log(x)')">log</code></li>
+                            <li>Trig: <code v-on:click="set('sin(x)')">sin</code>, <code v-on:click="set('cos(x)')">cos</code>, <code v-on:click="set('tan(x)')">tan</code>, 
+                                <code v-on:click="set('csc(x)')">csc</code>, <code v-on:click="set('sec(x)')">sec</code>, <code v-on:click="set('cot(x)')">cot</code>, <code v-on:click="set('asin(x)')">asin</code>, 
+                                <code v-on:click="set('acos(x)')">acos</code>, <code v-on:click="set('atan(x)')">atan</code>, <code v-on:click="set('sinh(x)')">sinh</code>, <code v-on:click="set('cosh(x)')">cosh</code>, <code v-on:click="set('tanh(x)')">tanh</code></li>
+                            <li>Equality: <code v-on:click="set('a*x^2 + b*x + c = 0')">a*x^2 + b*x + c = 0</code></li>
+                            <li>Inequality: <code v-on:click="set('sqrt(x) > x')">sqrt(x) > x</code></li>
+                            <li>Matrix: <code v-on:click="set('Matrix([1,2,3])')">Matrix([1,2,3])</code>, <code v-on:click="set('Matrix([[1,2],[3,4]])')">Matrix([[1,2],[3,4]])</code></li>
+                            <li>Parametric: <code v-on:click="set('Matrix([sin(2*t), cos(3*t)])')">Matrix([sin(2*t), cos(3*t)])</code>, <code v-on:click="set('Matrix([cos(3*t), sin(3*t), t])')">Matrix([cos(3*t), sin(3*t), t])</code></li>
                             <li>Random: <code v-on:click="rand">?</code></li>
                         </ul>
                     </p>
-                    Need more help? Look at the <a href="https://github.com/darkeclipz/mathpy#usage" target="_new">usage</a> or <a href="https://github.com/darkeclipz/mathpy#examples" target="_new">examples</a>.
+                    Take a tour along all the different features by clicking on the examples (except trig). Need more help? Look at the <a href="https://github.com/darkeclipz/mathpy#usage" target="_new">usage</a> or <a href="https://github.com/darkeclipz/mathpy#examples" target="_new">examples</a>.
                 </div>
             </div>
         </div>
@@ -82,7 +88,7 @@
                 <div v-if="plot_error">Something went wrong while plotting:<br/><pre>{{plot_error}}</pre></span><br/>
                     <button v-if="variables.length == 1" class="btn btn-primary" v-on:click="plot" type="button" >Try again</button>
                 </div>
-                <div v-if="!is_constant || (is_square_matrix && dimension[0] == 2)">
+                <div v-if="!is_constant || (is_square_matrix && dimension[0] == 2)" class="text-right">
                     <hr/>
                     <button v-if="variables.length == 1" class="btn btn-primary" v-on:click="plot" type="button">Line</button>
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="plot" type="button">Surface</button>
