@@ -340,7 +340,7 @@ def pplot():
         if not 'Matrix' in str(type(ps)):
             raise ValueError('Parametric plot requires a matrix.')
         
-        a = 32
+        a = 24
         fig = plt.figure(figsize=(5,5))
         fig.clf()
 
