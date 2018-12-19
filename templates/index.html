@@ -66,7 +66,7 @@
         <div id="info" class="card border-secondary mb-3" v-if="parsed && !expression_error">
             <div class="card-header">Expression</div>
             <div class="card-body">
-                <p class="card-text" v-if="expression_latex" v-bind:class="[ expression_latex ? 'fade-in' : '' ]">The expression is parsed as <span id="expression">${{ expression_latex }}$</span><span v-if="variables.length > 0">, where
+                <p class="card-text" v-if="expression_latex" v-bind:class="[ expression_latex ? 'fade-in' : '' ]">The expression is parsed as <span id="expression" v-if="!is_ugly">${{ expression_latex }}$</span><span v-if="is_ugly">$M$</span><span v-if="variables.length > 0">, where
                     {{ variables.map(v => '$' + v + '$').join(', ')}} {{variables.length != 1 ? 'are variables' : 'is a variable'}}</span>. 
                     <span v-if="is_matrix">This is a ${{dimension[0]}} \times {{dimension[1]}}$ matrix.</span>
                 </p>
@@ -103,7 +103,7 @@
         <div id="actions" class="card border-secondary mb-3" v-if="variables.length > 0 || is_matrix">
             <div class="card-header">Actions</div>
             <div class="card-body">
-                <p>The following actions are available for ${{expression_latex}}$:</p>
+                <p>The following actions are available for <span v-if="!is_ugly">${{expression_latex}}$</span><span v-if="is_ugly">$M$</span>:</p>
                 <table class="table" style="margin-bottom: 0">
                     <tbody>
                         <tr v-if="variables.length > 0">

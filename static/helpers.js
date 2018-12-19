@@ -81,3 +81,13 @@ let parseMatrixShorthand = function(expr) {
     let subexpr = expr.substr(start, end - start);
     return expr.substr(0, start) + 'Matrix(' + subexpr + ')' + parseMatrixShorthand(expr.substr(end));
 };
+
+// Create a matrix from a list of numbers.
+// Example: 1 2 3 4 --> [1, 2, 3, 4]
+let parseSeperatedDigits = function(str) {
+    if(/[\d][ \t][\d]/.test(str)) {
+        let digits = str.split(' ').filter(s => /^[\.\d]+$/.test(s)).map(s => Number(s));
+        return '[' + digits.join(', ') + ']';
+    }
+    else return str;
+}

@@ -31,6 +31,9 @@ def expression():
         ps = parse_expr(request.json['expression'], locals())
         symbols = [str(s) for s in ps.free_symbols]
         symbols.sort()
+
+        
+
         return jsonify({
             'expression': str(ps),
             'expression_latex': latex(ps),
@@ -43,7 +46,8 @@ def expression():
                           or 'Greater' in str(type(ps)) 
                           or 'Less' in str(type(ps)),
             'is_matrix':     'Matrix' in str(type(ps)),
-            'dimension':     list(ps.shape) if 'Matrix' in str(type(ps)) else [0, 0]
+            'dimension':     list(ps.shape) if 'Matrix' in str(type(ps)) else [0, 0],
+            'is_ugly':       True if 'Matrix' in str(type(ps)) and (ps.shape[0] > 10 or ps.shape[1] > 10) else False
         })
 
     except Exception as e:
@@ -198,7 +202,7 @@ def plot():
 
             X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 512)
             Y = np.array([ps.subs(list(ps.free_symbols)[0], x) for x in X]).astype('float')
-            
+
             ax = fig.add_subplot(111)
             ax.plot(X,list(Y), c='purple', lw=3)
             ax.set_xlabel(str(list(ps.free_symbols)[0]))

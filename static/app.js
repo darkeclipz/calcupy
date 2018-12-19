@@ -11,6 +11,7 @@ var app = new Vue({
         is_inequality: false,
         is_matrix: false,
         is_square_matrix: false,
+        is_ugly: false,
         dimension: [0, 0],
         variables: [],
         parsed: false,
@@ -32,6 +33,8 @@ var app = new Vue({
                 let parts = castedExpression.split('=');
                 castedExpression = 'Eq(' + parts[0] + ', ' + parts[1] + ')';
             }
+            castedExpression = parseSeperatedDigits(castedExpression);
+            this.expression = castedExpression;
             castedExpression = parseMatrixShorthand(castedExpression);
             return castedExpression;
         },
@@ -50,6 +53,7 @@ var app = new Vue({
                     app.is_matrix = result.is_matrix;
                     app.is_square_matrix = app.is_matrix ? result.dimension[0] == result.dimension[1] : false;
                     app.is_algebraic = !(app.is_constant || app.is_equality || app.is_inequality || app.is_matrix);
+                    app.is_ugly = result.is_ugly;
                     app.dimension = result.dimension;
                     app.variables = result.variables;
                     app.parsed = true;
@@ -278,6 +282,7 @@ var app = new Vue({
             this.is_inequality = false;
             this.is_matrix = false,
             this.is_square_matrix = false,
+            this.is_ugly = false;
             this.dimension = [0, 0],
             this.parsed = false;
             this.expression_parsed = false;
