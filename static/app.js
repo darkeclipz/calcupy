@@ -360,7 +360,10 @@ var app = new Vue({
                 'exp(y) * cos(x) + exp(x) * sin(y)', 
                 'sqrt(4*x^2 + y^2) + cos(4*x) * y', 
                 '1 / (1 + x^2 + y^2)',
-                'Matrix([cos(4*t),sin(4*t),t])'
+                'Matrix([cos(4*t),sin(4*t),t])',
+                '[[a,b,c],[d,e,f],[g,h,i]]',
+                '[[a,b],[c,d]]',
+                '[-1-t,0-t,1-t] * [t,t**2,t**3].T'
             ];
             this.set(expressions[Math.floor(Math.random()*expressions.length)]);
         },

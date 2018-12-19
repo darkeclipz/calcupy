@@ -371,7 +371,7 @@ def pplot():
             plt.grid(ls='dashed',alpha=0.5)
         elif ps.shape == (3, 1):
             ts = np.linspace(request.json['xlim'][0], request.json['xlim'][1], a**2)
-            Y = np.array([ps.expand(ps)(var[0], t).evalf() for t in ts]).astype('float')
+            Y = np.array([expand(ps).subs(var[0], t).evalf() for t in ts]).astype('float')
             xs = [x[0] for x in Y]
             ys = [x[1] for x in Y]
             zs = [x[2] for x in Y]
