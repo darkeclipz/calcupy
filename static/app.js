@@ -34,11 +34,13 @@ var app = new Vue({
                 castedExpression = 'Eq(' + parts[0] + ', ' + parts[1] + ')';
             }
             castedExpression = parseSeperatedDigits(castedExpression);
-            this.expression = castedExpression;
+            if(castedExpression.indexOf('Eq') < 0)
+                this.expression = castedExpression;
             castedExpression = parseMatrixShorthand(castedExpression);
             return castedExpression;
         },
         parse: function() {
+            document.getElementById("function").blur();
             this.reset(); 
             this.setUrl();
             if(!this.expression) return;
@@ -58,13 +60,19 @@ var app = new Vue({
                     app.variables = result.variables;
                     app.parsed = true;
                     this.latex();
-                    if(app.is_matrix && app.variables.length == 1 && (app.dimension[0] == 2 || app.dimension[0] == 3) && app.dimension[1] == 1)
+                    if(app.is_matrix && app.variables.length == 1 
+                        && (app.dimension[0] == 2 || app.dimension[0] == 3) 
+                        && app.dimension[1] == 1)
                         app.pplot();
-                    else if( app.is_square_matrix && app.dimension[0] == 2)
-                        app.tplot();
                     else if( (app.variables.length == 2 || app.variables.length == 1) 
                     && (app.is_algebraic || (app.is_matrix && app.variables.length == 1))) 
                         app.plot();
+                    else if( app.is_square_matrix && app.dimension[0] == 2)
+                        app.tplot();
+                    else if( ((app.dimension[1] == 2 || app.dimension[1] == 3) 
+                        || (app.dimension[0] == 2 || app.dimension[0] == 3) )
+                        && app.dimension[1] == 1 && app.variables.length == 0)
+                        app.vplot();
                 },
                 (error) => { console.log(error); app.expression_error = true; }
             );
@@ -227,6 +235,13 @@ var app = new Vue({
                 (error) => { console.warn(error); app.plot_error = error; }
             );
         },
+        vplot: function() {
+            this.resetPlot();
+            http.post('/vplot', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
+                (result) => { app.plot_base64 = result.img; },
+                (error) => { console.warn(error); app.plot_error = error; }
+            );
+        },
         transpose: function(to) {
             this.resetAction();
             http.post('/transpose', { 'expression': this.expr(), 'var': to }, 
@@ -266,6 +281,17 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The eigen vectors of $M = ' + result.in + '$ are:';
                     this.action_out = '$$' + result.vectors + '$$ with the eigen values: $'+ result.values +'$.';
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        vlength: function(to) {
+            this.resetAction();
+            http.post('/vlength', { 'expression': this.expr(), 'var': to }, 
+                (result) => {
+                    this.action_in = 'The vector length of $M = ' + result.in + '$ is:';
+                    this.action_out = '$$' + result.out + '$$';
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -340,7 +366,6 @@ var app = new Vue({
         },
         set: function(expr) {
             this.expression = expr;
-            document.getElementById("function").blur();
             this.parse();
         },
         setLimits: function() {

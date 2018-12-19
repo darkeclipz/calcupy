@@ -20,6 +20,17 @@ font = {'size': 12}
 matplotlib.rc('font', **font)
 colormap = cm.magma
 
+from matplotlib.patches import FancyArrowPatch
+class Arrow3D(FancyArrowPatch):
+    def __init__(self, xs, ys, zs, *args, **kwargs):
+        FancyArrowPatch.__init__(self, (0,0), (0,0), *args, **kwargs)
+        self._verts3d = xs, ys, zs
+    def draw(self, renderer):
+        xs3d, ys3d, zs3d = self._verts3d
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, renderer.M)
+        self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
+        FancyArrowPatch.draw(self, renderer)
+
 @app.route('/')
 def index():
     return render_template("index.html"), 404
@@ -396,6 +407,91 @@ def tplot():
         print(e)
         return str(e), 400  
 
+@app.route('/vplot', methods=["POST"])
+def vplot():
+    try:
+
+        print('vplot: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        var = [str(s) for s in ps.free_symbols]
+        var.sort()
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Vector plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Vector plot requires a matrix.')
+        if not (ps.shape[1] == 2 or ps.shape[1] == 3 or ps.shape[0] == 2 or ps.shape[0] == 3):
+            raise ValueError('Vector plot requires a MxN matrix where M > 0 and N is [2, 3].')
+
+        fig = plt.figure(figsize=(5,5))
+        fig.clf()
+
+        U = np.array(ps).astype('float')
+
+        if U.shape == (1, 2): U = U.T
+        elif U.shape == (1, 3): U = U.T
+
+        if U.shape == (2, 1): U = np.array([U])
+        elif U.shape == (3, 1): U = np.array([U])
+        
+        if U.shape[1] == 3:
+
+            ax = fig.add_subplot(111, projection='3d')
+            plt.xlim([-2,2])
+            plt.ylim([-2,2])
+
+            plt.axis('equal')
+            X = np.array([np.cos(x) for x in np.linspace(0, 2*np.pi, 64)])
+            Y = np.array([np.sin(y) for y in np.linspace(0, 2*np.pi, 64)])
+            zeros = np.zeros(X.shape)
+
+            plt.plot(X,zeros,zeros,c='darkgray', lw=2, alpha=0.33, ls='dashed')
+            plt.plot(zeros,X,zeros,c='darkgray', lw=2, alpha=0.33, ls='dashed')
+
+            plt.plot(zeros,zeros,X,c='darkgray', lw=2, alpha=0.33, ls='dashed')
+
+            for i in range(U.shape[0]):
+                x = U[i][0]; y = U[i][1]; z = U[i][2]
+                magn = np.sqrt(x**2+y**2+z**2)
+                ax.add_artist(Arrow3D([0, x/magn], [0, y/magn], [0,z/magn], mutation_scale=15, lw=3, arrowstyle="-|>", color="purple"))
+
+            plt.plot(X,Y,zeros,c='darkgray', lw=3, alpha=0.33)
+            plt.plot(zeros,X,Y,c='darkgray', lw=3, alpha=0.33)
+            plt.axis('off')
+            fig.tight_layout()
+
+        elif U.shape[1] == 2:
+            plt.xlim([-2,2])
+            plt.ylim([-2,2])
+
+            plt.axis('equal')
+            X = [np.cos(x) for x in np.linspace(0, 2*np.pi, 64)]
+            Y = [np.sin(y) for y in np.linspace(0, 2*np.pi, 64)]
+
+            plt.plot(X,Y, c='darkgray', lw=3)
+
+            for i in range(U.shape[0]):
+                x = U[i][0]; y = U[i][1]
+                magn = np.sqrt(x**2 + y**2)
+                plt.annotate("", xy=(x/magn, y/magn), xytext=(0, 0),arrowprops=dict(arrowstyle="->", color="purple", lw=4))
+
+            plt.axhline(0, ls='dashed', alpha=0.33, c='gray', lw=3)
+            plt.axvline(0, ls='dashed', alpha=0.33, c='gray', lw=3)
+            plt.axis('off')
+            fig.tight_layout()
+
+        else:
+            raise ValueError('vplot requires the columns to be 3 or 2 dimensional.')
+
+        data = BytesIO()
+        fig.savefig(data)
+        data.seek(0)
+        encoded_img = base64.b64encode(data.read())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })  
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400  
+
 @app.route('/transpose', methods=['POST'])
 def la_transpose():
     try:
@@ -438,8 +534,14 @@ def la_det():
         if ps.shape[0] != ps.shape[1]:
             raise ValueError('Requires a square matrix.')
         ps = parse_expr(request.json['expression'], locals())
-        var = request.json['var']
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.det()), 'var': var })
+        det = ps.det()
+        result = latex(det)
+        if len(det.free_symbols) == 1:
+
+            var = list(det.free_symbols)[0]
+            sln = solve(det, var)
+            result += '\\\\ {} = {}'.format(latex(var), latex(sln))
+        return jsonify({ 'in': latex(ps), 'out': result })
 
     except Exception as e:
         print(e)
@@ -457,6 +559,25 @@ def la_eigen():
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
         return jsonify({ 'in': latex(ps), 'vectors': latex([v[2][0][0] for v in ps.eigenvects()]), 'values': latex(ps.eigenvals()) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/vlength', methods=['POST'])
+def la_vlength():
+    try:
+        print('vlength: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Requires a matrix.')
+        if not (ps.shape[0] > 1 and ps.shape[1] == 1):
+            raise ValueError('Requires a MxN matrix where M > 1 and N = 1.')
+        var = request.json['var']
+
+        product = sum([ps[i]**2 for i in range(ps.shape[0])])
+
+        return jsonify({ 'in': latex(ps), 'out': latex( simplify( product*0.5 )) })
 
     except Exception as e:
         print(e)
