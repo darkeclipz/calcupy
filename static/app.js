@@ -340,6 +340,7 @@ var app = new Vue({
         },
         set: function(expr) {
             this.expression = expr;
+            document.getElementById("function").blur();
             this.parse();
         },
         setLimits: function() {

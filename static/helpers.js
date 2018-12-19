@@ -85,8 +85,11 @@ let parseMatrixShorthand = function(expr) {
 // Create a matrix from a list of numbers.
 // Example: 1 2 3 4 --> [1, 2, 3, 4]
 let parseSeperatedDigits = function(str) {
-    if(/[\d][ \t][\d]/.test(str)) {
-        let digits = str.split(' ').filter(s => /^[\.\d]+$/.test(s)).map(s => Number(s));
+    if(/[\d][ \t]+[\d]/.test(str)) {   
+        let digits = replaceAll(str, '\t', ' ')
+            .split(' ')
+            .filter(s => /^[\.\d]+$/.test(s))
+            .map(s => Number(s));
         return '[' + digits.join(', ') + ']';
     }
     else return str;
