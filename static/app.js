@@ -69,9 +69,9 @@ var app = new Vue({
                         app.plot();
                     else if( app.is_square_matrix && app.dimension[0] == 2)
                         app.tplot();
-                    else if( ((app.dimension[1] == 2 || app.dimension[1] == 3) 
-                        || (app.dimension[0] == 2 || app.dimension[0] == 3) )
-                        && app.dimension[1] == 1 && app.variables.length == 0)
+                    else if( 
+                        (app.dimension[0] == 2 || app.dimension[0] == 3 || app.dimension[1] == 2 || app.dimension[1] == 3) 
+                        && app.variables.length == 0)
                         app.vplot();
                 },
                 (error) => { console.log(error); app.expression_error = true; }

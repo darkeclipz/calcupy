@@ -92,7 +92,7 @@
                 <div v-if="(plot_base64 || plot_error) && (!is_constant || (is_square_matrix && dimension[0] == 2) || dimension[1] == 2 || dimension[1] == 3)" class="text-right">
                     <hr/>
                     <button v-if="variables.length == 1" class="btn btn-primary" v-on:click="plot" type="button">Line</button>
-                    <button v-if="(dimension[1] == 2 || dimension[1] == 3) && dimension[0] > 0" class="btn btn-primary" v-on:click="vplot" type="button">Vector</button>
+                    <button v-if="(dimension[1] == 2 || dimension[1] == 3 || dimension[0] == 2 || dimension[0] == 3) && dimension[0] > 0" class="btn btn-primary" v-on:click="vplot" type="button">Vector</button>
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="plot" type="button">Surface</button>
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="cplot" type="button">Contour</button>
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="gplot" type="button">Gradient</button>

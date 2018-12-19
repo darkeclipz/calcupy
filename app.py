@@ -453,6 +453,7 @@ def vplot():
                 x = U[i][0]; y = U[i][1]; z = U[i][2]
                 magn = np.sqrt(x**2+y**2+z**2)
                 ax.add_artist(Arrow3D([0, x/magn], [0, y/magn], [0,z/magn], mutation_scale=15, lw=3, arrowstyle="-|>", color="purple"))
+                ax.add_artist(Arrow3D([0, x/magn], [0, y/magn], [0,0], mutation_scale=8, lw=2, arrowstyle="-|>", color="darkgray", alpha=0.5))
 
             plt.plot(X,Y,zeros,c='darkgray', lw=3, alpha=0.33)
             plt.plot(zeros,X,Y,c='darkgray', lw=3, alpha=0.33)
