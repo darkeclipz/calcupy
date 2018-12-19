@@ -27,7 +27,7 @@ var app = new Vue({
     },
     methods: {
         expr: function() {
-            let castedExpression = replaceAll(this.expression, '[\\^]', '**');
+            let castedExpression = replaceAll(this.expression.trim(), '[\\^]', '**');
             castedExpression = replaceAll(castedExpression, 'abs', 'Abs');
             if(castedExpression.indexOf('=') >= 0) {
                 let parts = castedExpression.split('=');
@@ -299,7 +299,7 @@ var app = new Vue({
         },
         actionError: function(e) {
             this.action_error = e;
-            console.warn(error);
+            console.warn(e);
         },
         reset: function() {
             this.expression_error = false;

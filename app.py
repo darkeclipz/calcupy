@@ -41,10 +41,9 @@ def expression():
         print('expression: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         symbols = [str(s) for s in ps.free_symbols]
+        #symbols_latex = [latex(s) for s in ps.free_symbols]
         symbols.sort()
-
-        
-
+        #symbols_latex.sort()
         return jsonify({
             'expression': str(ps),
             'expression_latex': latex(ps),
@@ -230,7 +229,7 @@ def plot():
             xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 32)
             ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], 32)
             X, Y = np.meshgrid(xs, ys)
-            zs = np.array([ps.subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+            zs = np.array([expand(ps).subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
             Z = zs.reshape(X.shape)
 
             ax = fig.add_subplot(111, projection='3d')
@@ -273,7 +272,7 @@ def cplot():
         xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 32)
         ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], 32)
         X, Y = np.meshgrid(xs, ys)
-        zs = np.array([ps.subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+        zs = np.array([expand(ps).subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
         Z = zs.reshape(X.shape)
                     
         ax = fig.add_subplot(111)
@@ -316,7 +315,7 @@ def gplot():
         xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], detail)
         ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], detail)
         X, Y = np.meshgrid(xs, ys)
-        zs = np.array([ps.subs('x', x).subs('y', y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+        zs = np.array([expand(ps).subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
         Z = zs.reshape(X.shape)
         plt.contourf(X, Y, Z, detail*2, cmap=colormap)
 
@@ -324,7 +323,7 @@ def gplot():
         xs = np.linspace(request.json['xlim'][0], request.json['xlim'][1], np.floor(detail/arrows))
         ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], np.floor(detail/arrows))
         X, Y = np.meshgrid(xs, ys)
-        dzs = np.array([grad.subs('x', x).subs('y', y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
+        dzs = np.array([grad.subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
         dZx = [z[0] for z in dzs]
         dZy = [z[1] for z in dzs]
         dZz = [np.sqrt(np.dot(z,z)) for z in dzs]
@@ -372,7 +371,7 @@ def pplot():
             plt.grid(ls='dashed',alpha=0.5)
         elif ps.shape == (3, 1):
             ts = np.linspace(request.json['xlim'][0], request.json['xlim'][1], a**2)
-            Y = np.array([ps.subs(var[0], t).evalf() for t in ts]).astype('float')
+            Y = np.array([ps.expand(ps)(var[0], t).evalf() for t in ts]).astype('float')
             xs = [x[0] for x in Y]
             ys = [x[1] for x in Y]
             zs = [x[2] for x in Y]
@@ -436,8 +435,8 @@ def vplot():
         if U.shape[1] == 3:
 
             ax = fig.add_subplot(111, projection='3d')
-            plt.xlim([-2,2])
-            plt.ylim([-2,2])
+            plt.xlim([-1,1])
+            plt.ylim([-1,1])
 
             plt.axis('equal')
             X = np.array([np.cos(x) for x in np.linspace(0, 2*np.pi, 64)])
@@ -461,8 +460,8 @@ def vplot():
             fig.tight_layout()
 
         elif U.shape[1] == 2:
-            plt.xlim([-2,2])
-            plt.ylim([-2,2])
+            plt.xlim([-1,1])
+            plt.ylim([-1,1])
 
             plt.axis('equal')
             X = [np.cos(x) for x in np.linspace(0, 2*np.pi, 64)]
@@ -478,13 +477,12 @@ def vplot():
             plt.axhline(0, ls='dashed', alpha=0.33, c='gray', lw=3)
             plt.axvline(0, ls='dashed', alpha=0.33, c='gray', lw=3)
             plt.axis('off')
-            fig.tight_layout()
 
         else:
             raise ValueError('vplot requires the columns to be 3 or 2 dimensional.')
 
         data = BytesIO()
-        fig.savefig(data)
+        fig.savefig(data, bbox_inches='tight')
         data.seek(0)
         encoded_img = base64.b64encode(data.read())
         return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })  
@@ -541,7 +539,7 @@ def la_det():
 
             var = list(det.free_symbols)[0]
             sln = solve(det, var)
-            result += '\\\\ {} = {}'.format(latex(var), latex(sln))
+            result += ' \\implies {} = {}'.format(latex(var), latex(sln[0]))
         return jsonify({ 'in': latex(ps), 'out': result })
 
     except Exception as e:

@@ -94,3 +94,19 @@ let parseSeperatedDigits = function(str) {
     }
     else return str;
 }
+
+// Expand all the generators to lists.
+let parseGenerators = function(str) {
+
+    // Range(a, b)
+
+    range = /Range\( *([\d]*) *, *([\d]*) *\)/
+
+    if(range.test(str)) {
+        //str = str.replace(range_ab, 1);    
+
+        
+    }
+
+    return str;
+}
