@@ -32,6 +32,7 @@ var app = new Vue({
                 let parts = castedExpression.split('=');
                 castedExpression = 'Eq(' + parts[0] + ', ' + parts[1] + ')';
             }
+            castedExpression = parseMatrixShorthand(castedExpression);
             return castedExpression;
         },
         parse: function() {

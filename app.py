@@ -14,6 +14,7 @@ import base64
 import numpy as np
 from sympy import symbols, sympify, latex, integrate, solve, solveset, Matrix, expand, factor, primitive, simplify, factor_list
 from sympy.parsing.sympy_parser import parse_expr
+from scipy.stats import scoreatpercentile
 
 font = {'size': 12}
 matplotlib.rc('font', **font)
@@ -195,12 +196,14 @@ def plot():
         fig.clf()
         if len(ps.free_symbols) == 1:
 
-            X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 256)
-            Y = [ps.subs(list(ps.free_symbols)[0], x) for x in X]
+            X = np.linspace(request.json['xlim'][0], request.json['xlim'][1], 512)
+            Y = np.array([ps.subs(list(ps.free_symbols)[0], x) for x in X]).astype('float')
+            
             ax = fig.add_subplot(111)
-            ax.plot(X,Y, c='purple', lw=3)
+            ax.plot(X,list(Y), c='purple', lw=3)
             ax.set_xlabel(str(list(ps.free_symbols)[0]))
             ax.set_ylabel('f({})'.format(str(list(ps.free_symbols)[0])))
+            
             if '\\' not in latex(ps):
                 plt.title('Line plot of ${}$'.format(latex(ps)))
             plt.grid(ls='dashed', alpha=.5)
