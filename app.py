@@ -576,7 +576,7 @@ def la_vlength():
 
         product = sum([ps[i]**2 for i in range(ps.shape[0])])
 
-        return jsonify({ 'in': latex(ps), 'out': latex( simplify( product*0.5 )) })
+        return jsonify({ 'in': latex(ps), 'out': latex( simplify( product**0.5 )) })
 
     except Exception as e:
         print(e)
