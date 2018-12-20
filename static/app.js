@@ -73,6 +73,8 @@ var app = new Vue({
                         (app.dimension[0] == 2 || app.dimension[0] == 3 || app.dimension[1] == 2 || app.dimension[1] == 3) 
                         && app.variables.length == 0)
                         app.vplot();
+                    else if(app.variables.length == 0 && app.is_matrix && app.dimension[0] >= 2 && app.dimension[1] >= 2)
+                        app.mplot();
                 },
                 (error) => { console.log(error); app.expression_error = true; }
             );
@@ -224,6 +226,13 @@ var app = new Vue({
         pplot: function() {
             this.resetPlot();
             http.post('/pplot', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
+                (result) => { app.plot_base64 = result.img; },
+                (error) => { console.warn(error); app.plot_error = error; }
+            );
+        },
+        mplot: function() {
+            this.resetPlot();
+            http.post('/mplot', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
                 (result) => { app.plot_base64 = result.img; },
                 (error) => { console.warn(error); app.plot_error = error; }
             );

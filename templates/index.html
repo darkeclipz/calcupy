@@ -98,6 +98,7 @@
                     <button v-if="variables.length == 2 && is_algebraic" class="btn btn-primary" v-on:click="gplot" type="button">Gradient</button>
                     <button v-if="variables.length == 1 && is_matrix && dimension[1] == 1 && (dimension[0] == 2 || dimension[0] == 3)" class="btn btn-primary" v-on:click="pplot" type="button">Parametric</button>
                     <button v-if="variables.length == 0 && is_square_matrix && dimension[0] == 2" class="btn btn-primary" v-on:click="tplot" type="button">Transformation</button>
+                    <button v-if="variables.length == 0 && is_matrix && dimension[0] >= 2 && dimension[1] >= 2" class="btn btn-primary" v-on:click="mplot" type="button">Matrix</button>
                 </div>
             </div>
         </div>

@@ -308,7 +308,7 @@ def gplot():
         ax = fig.add_subplot(111)
 
         detail = 24
-        arrows = 1
+        arrows = 2
 
         # contour plot
         grad = Matrix([ps.diff(var[0]), ps.diff(var[1])])
@@ -324,10 +324,19 @@ def gplot():
         ys = np.linspace(request.json['ylim'][0], request.json['ylim'][1], np.floor(detail/arrows))
         X, Y = np.meshgrid(xs, ys)
         dzs = np.array([grad.subs(var[0], x).subs(var[1], y).evalf() for x, y in zip(np.ravel(X), np.ravel(Y))]).astype('float')
-        dZx = [z[0] for z in dzs]
-        dZy = [z[1] for z in dzs]
-        dZz = [np.sqrt(np.dot(z,z)) for z in dzs]
-        quiv = plt.quiver(X,Y,dZx,dZy,dZz,cmap=colormap, pivot="middle")
+
+        dZx = np.array([z[0] for z in dzs])
+        dZy = np.array([z[1] for z in dzs])
+
+        dZz = np.array([np.sqrt(np.dot(z,z)) for z in dzs])
+
+        #unitX = dZx / dZz
+        #unitY = dZy / dZz
+
+        #dZx = np.min(dZx, unitX)
+        #dZy = np.min(dZy, unitY)
+
+        quiv = plt.quiver(X,Y,dZx/dZz,dZy/dZz,dZz,cmap=colormap, pivot="middle")
         plt.colorbar(quiv, shrink=0.8)
 
         plt.title('Gradient plot of ${}$'.format(latex(ps)))
@@ -480,6 +489,36 @@ def vplot():
 
         else:
             raise ValueError('vplot requires the columns to be 3 or 2 dimensional.')
+
+        data = BytesIO()
+        fig.savefig(data, bbox_inches='tight')
+        data.seek(0)
+        encoded_img = base64.b64encode(data.read())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })  
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400  
+
+@app.route('/mplot', methods=["POST"])
+def mplot():
+    try:
+
+        print('mplot: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        var = [str(s) for s in ps.free_symbols]
+        var.sort()
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Matrix plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Matrix plot requires a matrix.')
+
+        fig = plt.figure(figsize=(5,5))
+        fig.clf()
+
+        M = np.array(ps).astype('float')
+        im = plt.imshow(M, cmap=colormap)
+        plt.colorbar(im, shrink=0.6, aspect=8)
 
         data = BytesIO()
         fig.savefig(data, bbox_inches='tight')
