@@ -82,12 +82,14 @@ There is no UI component yet to change the plot limits. However, it can be done 
 
 Feel free to contribute! Also, if you have an idea, please let me know (or submit it as an issue on Github)!
 
-# Thanks to
+# Thanks
 
- * Matplotlib
- * Sympy
- * Flask
- * Vue.js
- * Mathjax
+Made possible by:
+
+ * SymPy for computer algebra capabilities.
+ * Matplotlib for plotting.
+ * Flask as back-end.
+ * Vue.js as front-end.
+ * Mathjax for equation typesetting.
 
 Hosted on Heroku with gUnicorn.
