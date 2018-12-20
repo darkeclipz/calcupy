@@ -7,7 +7,7 @@
 # 19-12-2018
 
  - Matrix shorthand notation (parses [1,2,3] to Matrix([1,2,3])).
- - Parsing for lists of numbers (with seperators ' ' or '\t').
+ - Parsing for lists of numbers (with seperators ' ' or '\t') for copy/paste from Excel.
  - Vector plots.
  - Improved expression interpretation.
  - Minor improvements.
