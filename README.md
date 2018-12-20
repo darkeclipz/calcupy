@@ -39,6 +39,7 @@ Based on what type of expression and how many variables there are, the following
 |1|Column vector|Line plot of vectors|
 |1|Matrix 2x1|Parametric plot 2D|
 |1|Matrix 3x1|Parametric plot 3D|
+|1|Matrix NxM where M,N >= 2|Matrix plot|
 
 Not what you want? Submit what you are missing, as an issue, on Github.
 
