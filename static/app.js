@@ -69,6 +69,8 @@ var app = new Vue({
                         app.plot();
                     else if( app.is_square_matrix && app.dimension[0] == 2)
                         app.tplot();
+                    else if(app.is_square_matrix)
+                        app.graph();
                     else if( 
                         (app.dimension[0] == 2 || app.dimension[0] == 3 || app.dimension[1] == 2 || app.dimension[1] == 3) 
                         && app.variables.length == 0)
@@ -247,6 +249,13 @@ var app = new Vue({
         vplot: function() {
             this.resetPlot();
             http.post('/vplot', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
+                (result) => { app.plot_base64 = result.img; },
+                (error) => { console.warn(error); app.plot_error = error; }
+            );
+        },
+        graph: function() {
+            this.resetPlot();
+            http.post('/graph', { 'expression': this.expr(), 'xlim': this.plot_xlim, 'ylim': this.plot_ylim }, 
                 (result) => { app.plot_base64 = result.img; },
                 (error) => { console.warn(error); app.plot_error = error; }
             );

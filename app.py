@@ -15,6 +15,7 @@ import numpy as np
 from sympy import symbols, sympify, latex, integrate, solve, solveset, Matrix, expand, factor, primitive, simplify, factor_list
 from sympy.parsing.sympy_parser import parse_expr
 from scipy.stats import scoreatpercentile
+import graph as graphplot
 
 font = {'size': 12}
 matplotlib.rc('font', **font)
@@ -529,6 +530,31 @@ def mplot():
     except Exception as e:
         print(e)
         return str(e), 400  
+
+@app.route('/graph', methods=["POST"])
+def graph():
+    try:
+
+        print('graph: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+        var = [str(s) for s in ps.free_symbols]
+        var.sort()
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Graph plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Graph plot requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Graph plot requires square matrix.')
+ 
+        M = np.array(ps).astype('float')
+        G = graphplot.plot(M)
+
+        encoded_img = graphplot.to_base64_png(G.pipe())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': encoded_img })  
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400 
 
 @app.route('/transpose', methods=['POST'])
 def la_transpose():
