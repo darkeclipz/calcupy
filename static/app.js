@@ -12,6 +12,9 @@ var app = new Vue({
         is_matrix: false,
         is_square_matrix: false,
         is_ugly: false,
+        is_graph: false,
+        is_directed: false,
+        is_weighted: false,
         dimension: [0, 0],
         variables: [],
         parsed: false,
@@ -23,7 +26,9 @@ var app = new Vue({
         action_show: false,
         action_in: "",
         action_out: "",
-        action_error: ""
+        action_error: "",
+        action_link: "",
+        action_image: ""
     },
     methods: {
         expr: function() {
@@ -54,6 +59,7 @@ var app = new Vue({
                     app.is_inequality = result.is_inequality;
                     app.is_matrix = result.is_matrix;
                     app.is_square_matrix = app.is_matrix ? result.dimension[0] == result.dimension[1] : false;
+                    app.is_graph = app.is_square_matrix;
                     app.is_algebraic = !(app.is_constant || app.is_equality || app.is_inequality || app.is_matrix);
                     app.is_ugly = result.is_ugly;
                     app.dimension = result.dimension;
@@ -315,6 +321,43 @@ var app = new Vue({
                 (error) => this.actionError(error)
             );
         },
+        graphComplement: function(to) {
+            this.resetAction();
+            http.post('/graph_complement', { 'expression': this.expr(), 'var': to }, 
+                (result) => {
+                    this.action_in = 'The complement of $G = ' + result.in + '$ is:';
+                    this.action_out = '$$G^\\textrm{C} = ' + result.out + '$$';
+                    this.action_link = result.out_expression;
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        graphDegree: function() {
+            this.resetAction();
+            http.post('/graph_degree', { 'expression': this.expr() }, 
+                (result) => {
+                    this.action_in = 'The degree matrix of $G = ' + result.in + '$ is:';
+                    this.action_out = '$$\\textrm{deg}(G) = ' + result.out + '$$';
+                    this.action_link = result.out_expression;
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        graphMst: function() {
+            this.resetAction();
+            http.post('/graph_mst', { 'expression': this.expr() }, 
+                (result) => {
+                    this.action_in = 'The minimum spanning tree of $G = ' + result.in + '$ is:'; // +weight
+                    this.action_out = '$$\\textrm{MST}(G) = ' + result.out + '$$ The weight of the MST is $' + result.weight + '$.';
+                    this.action_link = result.out_expression;
+                    this.action_image = result.image;
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
         actionError: function(e) {
             this.action_error = e;
             console.warn(e);
@@ -327,6 +370,9 @@ var app = new Vue({
             this.is_matrix = false,
             this.is_square_matrix = false,
             this.is_ugly = false;
+            this.is_graph = false,
+            this.is_directed = false,
+            this.is_weighted = false,
             this.dimension = [0, 0],
             this.parsed = false;
             this.expression_parsed = false;
@@ -343,6 +389,8 @@ var app = new Vue({
             this.action_in = "";
             this.action_out = "";
             this.action_error = "";
+            this.action_link = false;
+            this.action_image = "";
             if(this.action_out)
                 document.getElementById('action-result').innerHTML = "{{action_in}}<hr/>{{action_out}}";
         },

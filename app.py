@@ -36,15 +36,20 @@ class Arrow3D(FancyArrowPatch):
 def index():
     return render_template("index.html"), 404
 
+def is_sqr_matrix(M):
+    if not 'Matrix' in str(type(M)): return False
+    if M.shape[0] != M.shape[1]: return False
+    return True
+
 @app.route('/expression', methods=['POST'])
 def expression():
     try:
         print('expression: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         symbols = [str(s) for s in ps.free_symbols]
-        #symbols_latex = [latex(s) for s in ps.free_symbols]
+        symbols_latex = [latex(s) for s in ps.free_symbols]
         symbols.sort()
-        #symbols_latex.sort()
+        symbols_latex.sort()
         return jsonify({
             'expression': str(ps),
             'expression_latex': latex(ps),
@@ -58,7 +63,9 @@ def expression():
                           or 'Less' in str(type(ps)),
             'is_matrix':     'Matrix' in str(type(ps)),
             'dimension':     list(ps.shape) if 'Matrix' in str(type(ps)) else [0, 0],
-            'is_ugly':       True if 'Matrix' in str(type(ps)) and (ps.shape[0] > 10 or ps.shape[1] > 10) else False
+            'is_ugly':       True if 'Matrix' in str(type(ps)) and (ps.shape[0] > 10 or ps.shape[1] > 10) else False,
+            'is_weighted':   graphplot.is_weighted(ps) if is_sqr_matrix(ps) else False,
+            'is_directed':   graphplot.is_directed(ps) if is_sqr_matrix(ps) else False
         })
 
     except Exception as e:
@@ -309,7 +316,7 @@ def gplot():
         ax = fig.add_subplot(111)
 
         detail = 24
-        arrows = 2
+        arrows = 1.5
 
         # contour plot
         grad = Matrix([ps.diff(var[0]), ps.diff(var[1])])
@@ -337,7 +344,7 @@ def gplot():
         #dZx = np.min(dZx, unitX)
         #dZy = np.min(dZy, unitY)
 
-        quiv = plt.quiver(X,Y,dZx/dZz,dZy/dZz,dZz,cmap=colormap, pivot="middle")
+        quiv = plt.quiver(X,Y,dZx,dZy,dZz,cmap=colormap, pivot="middle")
         plt.colorbar(quiv, shrink=0.8)
 
         plt.title('Gradient plot of ${}$'.format(latex(ps)))
@@ -642,6 +649,78 @@ def la_vlength():
         product = sum([ps[i]**2 for i in range(ps.shape[0])])
 
         return jsonify({ 'in': latex(ps), 'out': latex( simplify( product**0.5 )) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/graph_complement', methods=['POST'])
+def graph_complement():
+    try:
+        print('graph complement: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Graph plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Graph plot requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Graph plot requires square matrix.')
+ 
+        G = np.array(ps).astype('float')
+        GC = Matrix(graphplot.complement(G))
+
+        return jsonify({ 'in': latex(ps), 'out': latex( GC ), 'out_expression': str(GC) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/graph_degree', methods=['POST'])
+def graph_degree():
+    try:
+        print('graph degree: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Graph plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Graph plot requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Graph plot requires square matrix.')
+ 
+        G = np.array(ps).astype('float')
+        GC = Matrix(np.array(graphplot.degree_matrix(G)).astype('int'))
+
+        return jsonify({ 'in': latex(ps), 'out': latex( GC ), 'out_expression': str(GC) })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+@app.route('/graph_mst', methods=['POST'])
+def graph_mst():
+    try:
+        print('graph mst: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Graph plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Graph plot requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Graph plot requires square matrix.')
+ 
+        G = ps #np.array(ps).astype('float')
+
+        mst, weight = graphplot.mst(G)
+        mst = Matrix(mst)
+        print(mst)
+
+        img = graphplot.plot_mst(np.array(G).astype('float'), mst)
+        encoded_img = graphplot.to_base64_png(img.pipe())
+
+        return jsonify({ 'in': latex(ps), 'out': latex( mst ), 'out_expression': str(mst), 'weight': str(float(weight)), 'image': encoded_img })
 
     except Exception as e:
         print(e)
