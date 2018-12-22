@@ -1,3 +1,12 @@
+# 23-12-2018
+
+ - Added graph plotting with Graphviz.
+ - Complement of a graph.
+ - Degree matrix of a graph.
+ - Minimum spanning tree of a graph.
+ - Changed arrow style for gradient plots.
+ - Added support to re-evaluate the result of an action.
+
 # 20-12-2018
 
  - Matrix plot.
