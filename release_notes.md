@@ -6,6 +6,7 @@
  - Polar plot is activated when `phi`, `Phi`, `theta`, `Theta`, `r` or `R` is the variable.
  - Unordered list for displaying a list of action results.
  - Basic graph information (as a list).
+ - Integrate with respect to any variable.
 
 # 23-12-2018
 

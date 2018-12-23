@@ -408,6 +408,7 @@ var app = new Vue({
             http.post('graph_info', { 'expression': this.expr() },
                 (result) => {
                     this.action_in = 'The graph $G$ contains the following properties:'; // +weight
+                    this.action_out = "";
                     this.action_out_list.push('The degree row of $G$ is $' + result.out['degrees'] + '$.');
                     this.action_out_list.push('The sum of the degree row is $' + result.out['degrees_sum'] + '$.');
                     this.latex();

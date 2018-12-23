@@ -131,7 +131,7 @@
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="diff2(variables[0])">$\textrm{d}^2 / \textrm{d}{{variables[0]}}^2$</button>
                                 <button v-if="variables.length > 1" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="diff(v)">$\partial / \partial {{ v }}$</button>
                                 <button v-if="variables.length > 1" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="diff2(v)">$\partial^2 / \partial {{ v }}^2$</button>
-                                <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0])">$\int$</button>
+                                <button v-if="variables.length > 0" v-for="v in variables" type="button" class="btn btn-primary" v-on:click="integrate(v)">$\int d{{v}}$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '0', 'T')">$\int_0^T$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '-oo', 'oo')">$\int_{-\infty}^{+\infty}$</button>
                                 <button v-if="variables.length > 1 && is_algebraic" type="button" class="btn btn-primary" v-on:click="grad">$\nabla f$</button>
@@ -193,9 +193,9 @@
                 </div>
 
                 <div v-if="action_out || action_out_list" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" :key="action_out">
-                    {{action_in}}
+                    <div>{{action_in}}</div>
                     <hr/>
-                    {{action_out}}
+                    <div>{{action_out}}</div>
                     <ul v-if="action_out_list">
                         <li v-for="item in action_out_list">{{item}}</li>
                     </ul>
