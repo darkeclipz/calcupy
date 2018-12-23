@@ -133,7 +133,7 @@
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '0', 'T')">$\int_0^T$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '-oo', 'oo')">$\int_{-\infty}^{+\infty}$</button>
                                 <button v-if="variables.length > 1 && is_algebraic" type="button" class="btn btn-primary" v-on:click="grad">$\nabla f$</button>
-                                <button v-if="variables.length == 2 && is_algebraic" type="button" class="btn btn-primary" v-on:click="showParameters(console.log('dirdiff'), '$D_\\hat{u} f$', 'Point $P$', 'Direction $\\hat{u}$', '', 'The directional derivative $D_\\hat{u} f = \\nabla f \\cdot \\hat{u}$ requires a point $P$ at which the gradient is evaluated and a directional unit vector $\\hat{u}$ in which the derivative is taken.')">$D_\hat{u} f$</button>
+                                <button v-if="variables.length == 2 && is_algebraic" type="button" class="btn btn-primary" v-on:click="showParameters(console.log('dirdiff'), '$D_\\hat{u} f$', 'Point $P$', 'Direction $\\hat{u}$', '', 'The directional derivative $D_\\hat{u} f = \\nabla f \\cdot \\hat{u}$ requires a point $P$ at which the gradient is evaluated and a directional unit vector $\\hat{u}$ in which the derivative is taken. If $\\hat{u}$ is not a unit vector, it will be normalized.')">$D_\hat{u} f$</button>
                                 <button v-if="variables.length == 2 && (is_algebraic || is_square_matrix)" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
                             </td>
                         </tr>
@@ -189,7 +189,7 @@
                     </div>
                 </div>
 
-                <div v-if="action_out" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" >
+                <div v-if="action_out" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" :key="action_out">
                     {{action_in}}
                     <hr/>
                     {{action_out}}

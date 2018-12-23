@@ -103,6 +103,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The simplification of $' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -114,6 +115,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The expansion of $' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -125,6 +127,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The factorization of $' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -147,6 +150,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The primitive of $' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -158,6 +162,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The derivative of $' + result.in + '$ with respect to $' + result.var + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -169,6 +174,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The second derivative of $' + result.in + '$ with respect to $' + result.var + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -180,6 +186,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The gradient $\\nabla f$ of $' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -191,6 +198,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The hessian matrix $H$ of $' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + ',$$ where the determinant $\\textrm{det}(H)$ is:$$' + result.hessian + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -203,6 +211,7 @@ var app = new Vue({
                     let limits = to ? '_{' + from.replace('oo', '\\infty') + '}^{' + to.replace('oo', '+\\infty') + '}' : '';
                     this.action_in = 'The integral of $\\int ' + limits + result.in + '\\ d' + result.var + '$ is:';
                     this.action_out = '$$' + result.out + (result.out.indexOf('int') < 0 && !to ? ' + C$$' : '$$');
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -215,6 +224,7 @@ var app = new Vue({
                     this.action_in = 'Solving $' + result.in + '$ for $' + result.var + '$ gives:';
                     append_var = !app.is_inequality ? result.var + '=' : '';
                     this.action_out = '$$' + append_var + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -282,6 +292,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The transposed matrix of $M = ' + result.in + '$ is:';
                     this.action_out = '$$M^\\textrm{T} = ' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -293,6 +304,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The inverse of $M = ' + result.in + '$ is:';
                     this.action_out = '$$M^{-1} = ' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -304,6 +316,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The determinant of $ M = ' + result.in + '$ is:';
                     this.action_out = '$$\\textrm{det}(M) = ' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)
@@ -326,6 +339,7 @@ var app = new Vue({
                 (result) => {
                     this.action_in = 'The vector length of $M = ' + result.in + '$ is:';
                     this.action_out = '$$' + result.out + '$$';
+                    this.action_link = result.out_expression;
                     this.latex();
                 },
                 (error) => this.actionError(error)

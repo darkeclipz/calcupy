@@ -78,7 +78,7 @@ def simplifyexpr():
         print('simplify: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         result = expand(ps)
-        return jsonify({ 'in': latex(ps), 'out': latex(result) })
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -89,7 +89,8 @@ def expandexpr():
     try:
         print('expand: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
-        return jsonify({ 'in': latex(ps), 'out': latex(expand(ps, trig=request.json['trig'])) })
+        result = expand(ps, trig=request.json['trig'])
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -100,7 +101,8 @@ def factorexpr():
     try:
         print('factor: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
-        return jsonify({ 'in': latex(ps), 'out': latex(factor(ps)) })
+        result = factor(ps)
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -134,7 +136,8 @@ def diff():
         print('diff: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.diff(var)), 'var': var })
+        result = ps.diff(var)
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'var': var, 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -146,7 +149,8 @@ def diff2():
         print('diff2: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.diff(var).diff(var)), 'var': var })
+        result = ps.diff(var).diff(var)
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'var': var, 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -160,7 +164,7 @@ def grad():
         symbols = [str(s) for s in ps.free_symbols]
         symbols.sort()
         grad = Matrix([ps.diff(v) for v in symbols])
-        return jsonify({ 'in': latex(ps), 'out': latex(grad) })
+        return jsonify({ 'in': latex(ps), 'out': latex(grad), 'out_expression': str(grad) })
 
     except Exception as e:
         print(e)
@@ -176,7 +180,7 @@ def hessian():
         x = symbols[0]
         y = symbols[1]
         hessian = Matrix([[ps.diff(x).diff(x), ps.diff(x).diff(y)],[ps.diff(y).diff(x), ps.diff(y).diff(y)]])
-        return jsonify({ 'in': latex(ps), 'out': latex(hessian), 'hessian': latex(hessian.det()) })
+        return jsonify({ 'in': latex(ps), 'out': latex(hessian), 'hessian': latex(hessian.det()), 'out_expression': str(hessian) })
 
     except Exception as e:
         print(e)
@@ -189,7 +193,8 @@ def integration():
         ps = parse_expr(request.json['expression'], locals())
         var = [s for s in ps.free_symbols if str(s) == request.json['var']][0] 
         limits = (var, request.json['from'], request.json['to']) if len(request.json['to']) > 0 else var
-        return jsonify({ 'in': latex(ps), 'out': latex(integrate(ps, limits)), 'var': str(var) })
+        result = integrate(ps, limits)
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'var': str(var), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -201,7 +206,8 @@ def solve_for():
         print('solve for: {}'.format(request.json))
         ps = parse_expr(request.json['expression'], locals())
         var = request.json['var']
-        return jsonify({ 'in': latex(ps), 'out': latex(solve(ps, var)), 'var': var })
+        result = solve(ps, var)
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'var': var, 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -571,8 +577,7 @@ def la_transpose():
         if not 'Matrix' in str(type(ps)):
             raise ValueError('Requires a matrix.')
         ps = parse_expr(request.json['expression'], locals())
-        var = request.json['var']
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.T), 'var': var })
+        return jsonify({ 'in': latex(ps), 'out': latex(ps.T), 'out_expression': str(ps.T) })
 
     except Exception as e:
         print(e)
@@ -588,8 +593,7 @@ def la_inverse():
         if ps.shape[0] != ps.shape[1]:
             raise ValueError('Requires a square matrix.')
         ps = parse_expr(request.json['expression'], locals())
-        var = request.json['var']
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.inv()), 'var': var })
+        return jsonify({ 'in': latex(ps), 'out': latex(ps.inv()), 'out_expression': str(ps.inv()) })
 
     except Exception as e:
         print(e)
@@ -612,7 +616,8 @@ def la_det():
             var = list(det.free_symbols)[0]
             sln = solve(det, var)
             result += ' \\implies {} = {}'.format(latex(var), latex(sln[0]))
-        return jsonify({ 'in': latex(ps), 'out': result })
+
+        return jsonify({ 'in': latex(ps), 'out': result, 'out_expression': str(det) })
 
     except Exception as e:
         print(e)
@@ -628,7 +633,7 @@ def la_eigen():
         if ps.shape[0] != ps.shape[1]:
             raise ValueError('Requires a square matrix.')
         ps = parse_expr(request.json['expression'], locals())
-        var = request.json['var']
+
         return jsonify({ 'in': latex(ps), 'vectors': latex([v[2][0][0] for v in ps.eigenvects()]), 'values': latex(ps.eigenvals()) })
 
     except Exception as e:
@@ -644,11 +649,11 @@ def la_vlength():
             raise ValueError('Requires a matrix.')
         if not (ps.shape[0] > 1 and ps.shape[1] == 1):
             raise ValueError('Requires a MxN matrix where M > 1 and N = 1.')
-        var = request.json['var']
 
         product = sum([ps[i]**2 for i in range(ps.shape[0])])
+        result = simplify( product**0.5 )
 
-        return jsonify({ 'in': latex(ps), 'out': latex( simplify( product**0.5 )) })
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
