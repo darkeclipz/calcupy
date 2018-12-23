@@ -614,7 +614,8 @@ def la_transpose():
         if not 'Matrix' in str(type(ps)):
             raise ValueError('Requires a matrix.')
         ps = parse_expr(request.json['expression'], locals())
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.T), 'out_expression': str(ps.T) })
+        result = ps.T
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
@@ -630,7 +631,8 @@ def la_inverse():
         if ps.shape[0] != ps.shape[1]:
             raise ValueError('Requires a square matrix.')
         ps = parse_expr(request.json['expression'], locals())
-        return jsonify({ 'in': latex(ps), 'out': latex(ps.inv()), 'out_expression': str(ps.inv()) })
+        result = ps.inv()
+        return jsonify({ 'in': latex(ps), 'out': latex(result), 'out_expression': str(result) })
 
     except Exception as e:
         print(e)
