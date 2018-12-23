@@ -1,3 +1,8 @@
+# 24-12-2018
+
+ - Added support for up to three parameters.
+ - Most functions now also return the `out_expression` which allows you to view the result.
+
 # 23-12-2018
 
  - Added graph plotting with Graphviz.

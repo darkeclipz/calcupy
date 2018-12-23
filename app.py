@@ -544,6 +544,38 @@ def mplot():
         print(e)
         return str(e), 400  
 
+@app.route('/polar_plot', methods=["POST"])
+def polarplot():
+    try:
+
+        print('polar plot: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+
+        if len(ps.free_symbols) != 1: 
+            raise ValueError('Polar plot requires one variable.')
+
+        fig = plt.figure(figsize=(5,5))
+        fig.clf()
+
+        f = ps
+        var = list(f.free_symbols)[0]
+        r = np.arange(0, 2*np.pi, 0.01)
+        theta = [f.subs(var, r).evalf() for r in r]
+        ax = plt.subplot(111, projection='polar')
+        ax.plot(r, theta, c='purple', lw=4)
+        ax.grid(True)
+        ax.set_title("Polar plot of ${}$".format(latex(f)), va='bottom')
+
+        data = BytesIO()
+        fig.savefig(data, bbox_inches='tight')
+        data.seek(0)
+        encoded_img = base64.b64encode(data.read())
+        return jsonify({ 'expression': str(ps), 'latex': latex(ps), 'img': 'data:image/png;base64,' + str(encoded_img)[2:-1] })  
+ 
+    except Exception as e:
+        print(e)
+        return str(e), 400 
+
 @app.route('/graph', methods=["POST"])
 def graph():
     try:
