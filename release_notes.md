@@ -4,6 +4,8 @@
  - Most functions now also return the `out_expression` which allows you to view the result.
  - Added polar plots (requires a function of one variable).
  - Polar plot is activated when `phi`, `Phi`, `theta`, `Theta`, `r` or `R` is the variable.
+ - Unordered list for displaying a list of action results.
+ - Basic graph information (as a list).
 
 # 23-12-2018
 
