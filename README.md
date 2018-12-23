@@ -91,6 +91,12 @@ The following are examples of expressions that are understood:
 
 There is no UI component yet to change the plot limits. However, it can be done manually by opening the console and entering `app.plot_xlim = app.plot_ylim = [-10,10]; app.plot()`.
 
+# SymPy syntax
+
+**Algebra** `simplify`, `factor`, `expand`, `cancel`, `apart`, `trigsimp`, `expand_trig`, `ln`, `expand_log`, `logcombine`, `expr.rewrite(sin)`, `expr.rewrite(gamma)`, `expr.rewrite(exp)`.
+
+**Calculus** `diff(expr, x)`, `diff(expr, x, 2)`, `expr.diff((x, n))`, `integrate(expr, x)`, `integrate(expr, (x, 0, oo))`, `integrate(expr, (x, -oo, oo), (y, -oo, oo))`
+
 # Contributions
 
 Feel free to contribute! Also, if you have an idea, please let me know (or submit it as an issue on Github)!
