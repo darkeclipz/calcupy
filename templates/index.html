@@ -133,6 +133,7 @@
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '0', 'T')">$\int_0^T$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '-oo', 'oo')">$\int_{-\infty}^{+\infty}$</button>
                                 <button v-if="variables.length > 1 && is_algebraic" type="button" class="btn btn-primary" v-on:click="grad">$\nabla f$</button>
+                                <button v-if="variables.length == 2 && is_algebraic" type="button" class="btn btn-primary" v-on:click="showParameters(console.log('dirdiff'), '$D_\\hat{u} f$', 'Point $P$', 'Direction $\\hat{u}$', '', 'The directional derivative $D_\\hat{u} f = \\nabla f \\cdot \\hat{u}$ requires a point $P$ at which the gradient is evaluated and a directional unit vector $\\hat{u}$ in which the derivative is taken.')">$D_\hat{u} f$</button>
                                 <button v-if="variables.length == 2 && (is_algebraic || is_square_matrix)" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
                             </td>
                         </tr>
@@ -152,6 +153,7 @@
                                 <button v-if="!is_weighted" type="button" class="btn btn-primary" v-on:click="graphComplement">$G^\textrm{C}$</button>
                                 <button type="button" class="btn btn-primary" v-on:click="graphDegree">$\textrm{deg}(G)$</button>
                                 <button v-if="!is_directed" type="button" class="btn btn-primary" v-on:click="graphMst">MST</button>
+                                <button type="button" class="btn btn-primary" v-on:click="showParameters(graphDijkstra, '$A^*$', 'Starting point', 'End point', '', 'Find the shortest path between a point $P$ and a point $Q$ with Dijkstra\'s algorithm. The index for the point can be read from the graph plot.')">$A^*$</button>
                             </td>
                         </tr>
                     </tbody>
@@ -162,6 +164,31 @@
         <div class="card border-secondary mb-3 output" v-if="action_show">
             <div class="card-header">Result</div>
             <div class="card-body">
+                <div v-if="parameter_show" :class="[ parameter_show ? 'fade-in' : '' ]">
+                    <p>The action {{parameter_func_name}} requires the following parameters:</p>
+                    <table class="table">
+                        <tr v-if="parameter_a_name">
+                            <td>{{parameter_a_name}}:</td>
+                            <td><input type="text" class="form-control" v-model="parameter_a_value"/></td>
+                        </tr>
+                        <tr v-if="parameter_b_name">
+                            <td>{{parameter_b_name}}:</td>
+                            <td><input type="text" class="form-control" v-model="parameter_b_value"/></td>
+                        </tr>
+                        <tr v-if="parameter_c_name">
+                            <td>{{parameter_c_name}}:</td>
+                            <td><input type="text" class="form-control" v-model="parameter_c_value"/></td>
+                        </tr>
+                    </table>
+                    <p v-if="parameter_explain">
+                        {{parameter_explain}}
+                        <hr/>
+                    </p>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary" class="form-control" v-on:click="parameter_func(parameter_a_value, parameter_b_value, parameter_c_value)">{{parameter_func_name}}</button>
+                    </div>
+                </div>
+
                 <div v-if="action_out" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" >
                     {{action_in}}
                     <hr/>
@@ -175,7 +202,7 @@
                     <hr/>
                     <button class="btn btn-primary" type="button" v-on:click="set(action_link);">View ></button>
                 </div>
-                <div v-if="!action_out && !action_error">
+                <div v-if="!action_out && !action_error && !parameter_show">
                     <div id="loader" class="progress" style="height: 24px;">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
                     </div>

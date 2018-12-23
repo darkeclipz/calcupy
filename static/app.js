@@ -28,7 +28,17 @@ var app = new Vue({
         action_out: "",
         action_error: "",
         action_link: "",
-        action_image: ""
+        action_image: "",
+        parameter_show: false,
+        parameter_func: function() { },
+        parameter_func_name: "Func",
+        parameter_a_name: "Parameter 1",
+        parameter_a_value: "",
+        parameter_b_name: "Parameter 2",
+        parameter_b_value: "",
+        parameter_c_name: "Parameter 3",
+        parameter_c_value: "",
+        parameter_explain: ""
     },
     methods: {
         expr: function() {
@@ -358,6 +368,28 @@ var app = new Vue({
                 (error) => this.actionError(error)
             );
         },
+        graphDijkstra: function() {
+            this.resetAction();
+            http.post('graph_dijkstra', { 'expression': this.expr() },
+                (result) => {
+                    this.action_in = 'The shortest path from ... to ... is:'; // +weight
+                    this.action_out = '$$\\textrm{Not implemented}$$';
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
+        showParameters(func, func_name, name_a, name_b = "", name_c = "", explain = "") {
+            this.resetAction();
+            this.parameter_show = true;
+            this.parameter_a_name = name_a;
+            this.parameter_b_name = name_b;
+            this.parameter_c_name = name_c;
+            this.parameter_func = func;
+            this.parameter_func_name = func_name;
+            this.parameter_explain = explain;
+            this.latex();
+        },
         actionError: function(e) {
             this.action_error = e;
             console.warn(e);
@@ -385,14 +417,28 @@ var app = new Vue({
             this.action_show = false;
         },
         resetAction: function() {
+            this.resetParameters();
             this.action_show = true;
             this.action_in = "";
             this.action_out = "";
             this.action_error = "";
             this.action_link = false;
             this.action_image = "";
-            if(this.action_out)
-                document.getElementById('action-result').innerHTML = "{{action_in}}<hr/>{{action_out}}";
+            //try {
+            //     document.getElementById('action-result').innerHTML = "{{action_in}}<hr/>{{action_out}}";
+            // } catch { }
+        },
+        resetParameters: function() {
+            this.parameter_show=  false;
+            this.parameter_func = function() { };
+            this.parameter_a_name = "Parameter 1";
+            this.parameter_a_value = "";
+            this.parameter_b_name = "Parameter 2";
+            this.parameter_b_value = "";
+            this.parameter_c_name = "Parameter 3";
+            this.parameter_c_value = "";
+            this.parameter_func_name = "Func";
+            this.parameter_explain = "";
         },
         resetPlot: function() {
             this.plot_show = true;
