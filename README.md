@@ -99,6 +99,7 @@ Made possible by:
 
  * SymPy for computer algebra capabilities.
  * Matplotlib for plotting.
+ * Graphviz for drawing graphs.
  * Flask as back-end.
  * Vue.js as front-end.
  * Mathjax for equation typesetting.
