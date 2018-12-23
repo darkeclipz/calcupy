@@ -768,6 +768,32 @@ def graph_mst():
         print(e)
         return str(e), 400
 
+@app.route('/graph_info', methods=['POST'])
+def graph_info():
+    try:
+        print('graph info: {}'.format(request.json))
+        ps = parse_expr(request.json['expression'], locals())
+
+        if len(ps.free_symbols) > 0: 
+            raise ValueError('Graph plot requires scalars.')
+        if not 'Matrix' in str(type(ps)):
+            raise ValueError('Graph plot requires a matrix.')
+        if ps.shape[0] != ps.shape[1]:
+            raise ValueError('Graph plot requires square matrix.')
+ 
+        G = ps #np.array(ps).astype('float')
+
+        degree_row = list(np.array(np.diagonal(graphplot.degree_matrix(G))).astype('int'))
+        degree_row.sort()
+
+        info = { 'degrees': latex(degree_row), 'degrees_sum': str(np.sum(degree_row)) }
+
+        return jsonify({ 'in': latex(ps), 'out': info })
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
 @app.route('/test')
 def test():
     return "This is a test endpoint!"

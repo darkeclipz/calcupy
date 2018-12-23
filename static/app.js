@@ -29,6 +29,7 @@ var app = new Vue({
         action_error: "",
         action_link: "",
         action_image: "",
+        action_out_list: [],
         parameter_show: false,
         parameter_func: function() { },
         parameter_func_name: "Func",
@@ -402,6 +403,18 @@ var app = new Vue({
                 (error) => this.actionError(error)
             );
         },
+        graphInfo: function() {
+            this.resetAction();
+            http.post('graph_info', { 'expression': this.expr() },
+                (result) => {
+                    this.action_in = 'The graph $G$ contains the following properties:'; // +weight
+                    this.action_out_list.push('The degree row of $G$ is $' + result.out['degrees'] + '$.');
+                    this.action_out_list.push('The sum of the degree row is $' + result.out['degrees_sum'] + '$.');
+                    this.latex();
+                },
+                (error) => this.actionError(error)
+            );
+        },
         showParameters(func, func_name, name_a, name_b = "", name_c = "", explain = "") {
             this.resetAction();
             this.parameter_show = true;
@@ -447,6 +460,7 @@ var app = new Vue({
             this.action_error = "";
             this.action_link = false;
             this.action_image = "";
+            this.action_out_list = [];
             //try {
             //     document.getElementById('action-result').innerHTML = "{{action_in}}<hr/>{{action_out}}";
             // } catch { }

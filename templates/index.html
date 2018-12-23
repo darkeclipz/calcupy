@@ -152,6 +152,7 @@
                         <tr v-if="is_graph && variables.length == 0">
                             <td>Graph theory</td>
                             <td>
+                                <button type="button" class="btn btn-primary" v-on:click="graphInfo">$G$</button>
                                 <button v-if="!is_weighted" type="button" class="btn btn-primary" v-on:click="graphComplement">$G^\textrm{C}$</button>
                                 <button type="button" class="btn btn-primary" v-on:click="graphDegree">$\textrm{deg}(G)$</button>
                                 <button v-if="!is_directed" type="button" class="btn btn-primary" v-on:click="graphMst">MST</button>
@@ -191,10 +192,13 @@
                     </div>
                 </div>
 
-                <div v-if="action_out" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" :key="action_out">
+                <div v-if="action_out || action_out_list" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" :key="action_out">
                     {{action_in}}
                     <hr/>
                     {{action_out}}
+                    <ul v-if="action_out_list">
+                        <li v-for="item in action_out_list">{{item}}</li>
+                    </ul>
                 </div>
                 <div v-if="action_image" :class="[ action_out ? 'fade-in' : '' ]" class="text-center">
                     <hr/>
@@ -204,7 +208,7 @@
                     <hr/>
                     <button class="btn btn-primary" type="button" v-on:click="set(action_link);">View ></button>
                 </div>
-                <div v-if="!action_out && !action_error && !parameter_show">
+                <div v-if="!(action_out || action_out_list) && !action_error && !parameter_show">
                     <div id="loader" class="progress" style="height: 24px;">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
                     </div>
