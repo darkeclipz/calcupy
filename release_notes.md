@@ -2,6 +2,8 @@
 
  - Added support for up to three parameters.
  - Most functions now also return the `out_expression` which allows you to view the result.
+ - Added polar plots (requires a function of one variable).
+ - Polar plot is activated when `phi`, `Phi`, `theta`, `Theta`, `r` or `R` is the variable.
 
 # 23-12-2018
 

@@ -42,6 +42,7 @@
                             <li>Inequality: <code v-on:click="set('sqrt(x) > x')">sqrt(x) > x</code></li>
                             <li>Matrix: <code v-on:click="set('[1,2,3]')">[1,2,3]</code>, <code v-on:click="set('[[1,2],[3,4]]')">[[1,2],[3,4]]</code></li>
                             <li>Parametric: <code v-on:click="set('[sin(2*t), cos(3*t)]')">[sin(2*t), cos(3*t)]</code>, <code v-on:click="set('[cos(3*t), sin(3*t), t]')">[cos(3*t), sin(3*t), t]</code>, <code v-on:click="set('[t, sin(3*t), 0]')">[t, sin(3*t), 0]</code></li>
+                            <li>Polar: <code v-on:click="set('cos(phi)')">cos(phi)</code>, <code v-on:click="set('cos(6*phi)+2')">cos(6*phi)+2</code>, <code v-on:click="set('0.5*phi + sin(3*phi)')">0.5*phi + sin(3*phi)</code></li>
                             <li>Lists: <code v-on:click="set('1,2,3,4')">1,2,3,4</code>, <code v-on:click="set('1 2 3 4')">1 2 3 4</code></li>
                             <li>Graphs: <code v-on:click="set('Matrix([[ 0.0,  6.0, 16.0, 42.0, 72.0,  0.0,  7.0, 18.0],[ 6.0,  0.0, 36.0, 28.0, 24.0, 45.0,  9.0, 42.0],[16.0, 36.0,  0.0,  0.0, 54.0,  0.0, 32.0, 54.0],[42.0, 28.0,  0.0,  0.0, 56.0, 63.0, 10.0, 14.0],[72.0, 24.0, 54.0, 56.0,  0.0, 72.0, 72.0, 18.0],[ 0.0, 45.0,  0.0, 63.0, 72.0,  0.0, 32.0, 10.0],[ 7.0,  9.0, 32.0, 10.0, 72.0, 32.0,  0.0, 63.0],[18.0, 42.0, 54.0, 14.0, 18.0, 10.0, 63.0,  0.0]])')">8x8 weighted graph</code></li>
                             <li>Random: <code v-on:click="rand">I'll try</code></li>
@@ -134,7 +135,7 @@
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '0', 'T')">$\int_0^T$</button>
                                 <button v-if="variables.length == 1" type="button" class="btn btn-primary" v-on:click="integrate(variables[0], '-oo', 'oo')">$\int_{-\infty}^{+\infty}$</button>
                                 <button v-if="variables.length > 1 && is_algebraic" type="button" class="btn btn-primary" v-on:click="grad">$\nabla f$</button>
-                                <button v-if="variables.length == 2 && is_algebraic" type="button" class="btn btn-primary" v-on:click="showParameters(console.log('dirdiff'), '$D_\\hat{u} f$', 'Point $P$', 'Direction $\\hat{u}$', '', 'The directional derivative $D_\\hat{u} f = \\nabla f \\cdot \\hat{u}$ requires a point $P$ at which the gradient is evaluated and a directional unit vector $\\hat{u}$ in which the derivative is taken. If $\\hat{u}$ is not a unit vector, it will be normalized. If $\\hat{u}$ is not provided, the derivative will be in the direction of the gradient.')">$D_\hat{u} f$</button>
+                                <button v-if="variables.length == 2 && is_algebraic && false" type="button" class="btn btn-primary" v-on:click="showParameters(console.log('dirdiff'), '$D_\\hat{u} f$', 'Point $P$', 'Direction $\\hat{u}$', '', 'The directional derivative $D_\\hat{u} f = \\nabla f \\cdot \\hat{u}$ requires a point $P$ at which the gradient is evaluated and a directional unit vector $\\hat{u}$ in which the derivative is taken. If $\\hat{u}$ is not a unit vector, it will be normalized. If $\\hat{u}$ is not provided, the derivative will be in the direction of the gradient.')">$D_\hat{u} f$</button>
                                 <button v-if="variables.length == 2 && (is_algebraic || is_square_matrix)" type="button" class="btn btn-primary" v-on:click="hessian">Hessian</button>
                             </td>
                         </tr>
@@ -154,7 +155,7 @@
                                 <button v-if="!is_weighted" type="button" class="btn btn-primary" v-on:click="graphComplement">$G^\textrm{C}$</button>
                                 <button type="button" class="btn btn-primary" v-on:click="graphDegree">$\textrm{deg}(G)$</button>
                                 <button v-if="!is_directed" type="button" class="btn btn-primary" v-on:click="graphMst">MST</button>
-                                <button type="button" class="btn btn-primary" v-on:click="showParameters(graphDijkstra, '$A^*$', 'Starting point', 'End point', '', 'Find the shortest path between a point $P$ and a point $Q$ with Dijkstra\'s algorithm. The index for the point can be read from the graph plot.')">$A^*$</button>
+                                <button v-if="false" type="button" class="btn btn-primary" v-on:click="showParameters(graphDijkstra, 'Dijkstra', 'Starting point $P$', 'End point $Q$', '', 'Find the shortest path between a point $P$ and a point $Q$ with Dijkstra\'s algorithm. The index for the point can be read from the graph plot.')">Dijkstra</button>
                             </td>
                         </tr>
                     </tbody>

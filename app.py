@@ -564,7 +564,12 @@ def polarplot():
         ax = plt.subplot(111, projection='polar')
         ax.plot(r, theta, c='purple', lw=4)
         ax.grid(True)
-        ax.set_title("Polar plot of ${}$".format(latex(f)), va='bottom')
+        title = latex(f)
+        if 'Matrix' in str(type(f)):
+            title = '\\left<{}\\right>'.format(latex(', '.join([latex(x) for x in f])))
+        if len(title) > 60:
+            title = '\\left<\\theta\\right>'
+        ax.set_title("Polar plot of ${}$".format(title), va='bottom')
 
         data = BytesIO()
         fig.savefig(data, bbox_inches='tight')

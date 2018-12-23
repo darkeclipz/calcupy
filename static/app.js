@@ -80,7 +80,7 @@ var app = new Vue({
                         && (app.dimension[0] == 2 || app.dimension[0] == 3) 
                         && app.dimension[1] == 1)
                         app.pplot();
-                    else if(app.variables.length == 1)
+                    else if(app.variables.length == 1 && ['phi', 'theta', 'r', 'Phi', 'Theta', 'R'].indexOf(app.variables[0]) >= 0)
                         app.polar();
                     else if( (app.variables.length == 2 || app.variables.length == 1) 
                     && (app.is_algebraic || (app.is_matrix && app.variables.length == 1))) 
