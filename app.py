@@ -16,6 +16,7 @@ from sympy import symbols, sympify, latex, integrate, solve, solveset, Matrix, e
 from sympy.parsing.sympy_parser import parse_expr
 from scipy.stats import scoreatpercentile
 import graph as graphplot
+from sympy.matrices import randMatrix
 
 font = {'size': 12}
 matplotlib.rc('font', **font)

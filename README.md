@@ -97,7 +97,7 @@ There is no UI component yet to change the plot limits. However, it can be done 
 
 **Calculus** `diff(expr, x)`, `diff(expr, x, 2)`, `expr.diff((x, n))`, `integrate(expr, x)`, `integrate(expr, (x, 0, oo))`, `integrate(expr, (x, -oo, oo), (y, -oo, oo))`, `limit(expr x, 0)`, `limit(expr, x, oo)`, `limit(1/x, x, 0, '+')`, `expr.series(x, 0, 4)`, `expr.series(x, 0, 4).removeO()`.
 
-**Matrices:** `M.T`, `eye(n)`, `zeros(n)`, `ones(n)`, `diag(1, 2, 3)`, `M.det()`, `M.charpoly(t)`.
+**Matrices:** `M.T`, `eye(n)`, `zeros(n)`, `ones(n)`, `diag(1, 2, 3)`, `M.det()`, `M.charpoly(t)`, `randMatrix(n)`.
 
 # Contributions
 
