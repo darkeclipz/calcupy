@@ -40,6 +40,13 @@ Based on what type of expression and how many variables there are, the following
 |1|Matrix 2x1|Parametric plot 2D|
 |1|Matrix 3x1|Parametric plot 3D|
 |1|Matrix NxM where M,N >= 2|Matrix plot|
+|0|Symmetric square matrix|Undirected graph|
+|0|Square matrix|Directed graph|
+|0|Simple graph|Graph complement|
+|0|Graph|Degree matrix|
+|0|Undirected graph|Minimum spanning tree (MST)|
+|1|Expression|Polar plot|
+|1|Matrix|Polar plot|
 
 Not what you want? Submit what you are missing, as an issue, on Github.
 
@@ -75,6 +82,10 @@ The following are examples of expressions that are understood:
    * [`Matrix([cos(3*t), sin(3*t), t])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(3*t)%2C%20sin(3*t)%2C%20t%5D))
    * [`Matrix([cos(13*t), 0, sin(7*t)])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(13*t)%2C%200%2C%20sin(7*t)%5D)&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
    * [`Matrix([cos(5*t), 0, t]) `](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(5*t)%2C%200%2C%20t%5D)%20&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
+ * Polar:
+   * example 1
+ * Graphs:
+   * [`8x8 weighted graph`](http://calcupy.herokuapp.com/?expr=Matrix(%5B%5B%200.0%2C%20%206.0%2C%2016.0%2C%2042.0%2C%2072.0%2C%20%200.0%2C%20%207.0%2C%2018.0%5D%2C%5B%206.0%2C%20%200.0%2C%2036.0%2C%2028.0%2C%2024.0%2C%2045.0%2C%20%209.0%2C%2042.0%5D%2C%5B16.0%2C%2036.0%2C%20%200.0%2C%20%200.0%2C%2054.0%2C%20%200.0%2C%2032.0%2C%2054.0%5D%2C%5B42.0%2C%2028.0%2C%20%200.0%2C%20%200.0%2C%2056.0%2C%2063.0%2C%2010.0%2C%2014.0%5D%2C%5B72.0%2C%2024.0%2C%2054.0%2C%2056.0%2C%20%200.0%2C%2072.0%2C%2072.0%2C%2018.0%5D%2C%5B%200.0%2C%2045.0%2C%20%200.0%2C%2063.0%2C%2072.0%2C%20%200.0%2C%2032.0%2C%2010.0%5D%2C%5B%207.0%2C%20%209.0%2C%2032.0%2C%2010.0%2C%2072.0%2C%2032.0%2C%20%200.0%2C%2063.0%5D%2C%5B18.0%2C%2042.0%2C%2054.0%2C%2014.0%2C%2018.0%2C%2010.0%2C%2063.0%2C%20%200.0%5D%5D)&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
 
 There is no UI component yet to change the plot limits. However, it can be done manually by opening the console and entering `app.plot_xlim = app.plot_ylim = [-10,10]; app.plot()`.
 
