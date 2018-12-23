@@ -75,13 +75,13 @@ The following are examples of expressions that are understood:
    * [`x^2 < 5`](https://calcupy.herokuapp.com/?expr=x%5E2%20%3C%3D%205)
    * [`sqrt(x) < x`](https://calcupy.herokuapp.com/?expr=sqrt(x)%20%3C%20x)
  * Matrices:
-   * [`Matrix([1,2,3])`](https://calcupy.herokuapp.com/?expr=Matrix(%5B1%2C2%2C3%5D))
-   * [`Matrix([[1,2],[3,4]])`](https://calcupy.herokuapp.com/?expr=Matrix(%5B%5B1%2C2%5D%2C%5B3%2C4%5D%5D))
+   * [`[1,2,3]`](https://calcupy.herokuapp.com/?expr=Matrix(%5B1%2C2%2C3%5D))
+   * [`[[1,2],[3,4]]`](https://calcupy.herokuapp.com/?expr=Matrix(%5B%5B1%2C2%5D%2C%5B3%2C4%5D%5D))
  * Parametric:
-   * [`Matrix([sin(2*t), cos(3*t)])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bsin(2*t)%2C%20cos(3*t)%5D))
-   * [`Matrix([cos(3*t), sin(3*t), t])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(3*t)%2C%20sin(3*t)%2C%20t%5D))
-   * [`Matrix([cos(13*t), 0, sin(7*t)])`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(13*t)%2C%200%2C%20sin(7*t)%5D)&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
-   * [`Matrix([cos(5*t), 0, t]) `](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(5*t)%2C%200%2C%20t%5D)%20&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
+   * [`[sin(2*t), cos(3*t)]`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bsin(2*t)%2C%20cos(3*t)%5D))
+   * [`[cos(3*t), sin(3*t), t]`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(3*t)%2C%20sin(3*t)%2C%20t%5D))
+   * [`[cos(13*t), 0, sin(7*t)]`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(13*t)%2C%200%2C%20sin(7*t)%5D)&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
+   * [`[cos(5*t), 0, t]`](https://calcupy.herokuapp.com/?expr=Matrix(%5Bcos(5*t)%2C%200%2C%20t%5D)%20&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
  * Polar:
    * [`cos(phi)`](http://calcupy.herokuapp.com/?expr=cos(phi)&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
    * [`cos(6*phi)+2`](http://calcupy.herokuapp.com/?expr=cos(6*phi)%2B2&xlima=-5&xlimb=5&ylima=-5&ylimb=5)
