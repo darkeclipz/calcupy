@@ -559,7 +559,7 @@ def polarplot():
 
         f = ps
         var = list(f.free_symbols)[0]
-        r = np.arange(0, 2*np.pi, 0.01)
+        r = np.arange(request.json['xlim'][0]*np.pi, request.json['xlim'][1]*np.pi, 0.01)
         theta = [f.subs(var, r).evalf() for r in r]
         ax = plt.subplot(111, projection='polar')
         ax.plot(r, theta, c='purple', lw=4)
