@@ -192,7 +192,7 @@
                     </div>
                 </div>
 
-                <div v-if="action_out || action_out_list" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" :key="action_out">
+                <div v-if="action_out || action_out_list.length > 0" id="action-result" :class="[ action_out ? 'fade-in' : '' ]" :key="action_out">
                     <div>{{action_in}}</div>
                     <hr/>
                     <div>{{action_out}}</div>
@@ -208,7 +208,7 @@
                     <hr/>
                     <button class="btn btn-primary" type="button" v-on:click="set(action_link);">View ></button>
                 </div>
-                <div v-if="!(action_out || action_out_list) && !action_error && !parameter_show">
+                <div v-if="!(action_out || action_out_list.length > 0) && !action_error && !parameter_show">
                     <div id="loader" class="progress" style="height: 24px;">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
                     </div>
