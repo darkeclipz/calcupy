@@ -1,8 +1,35 @@
 # Calcupy
 
-Calculus powered graphical calculator with Python.
+Calculus powered graphical calculator with Python. Enter a function, equality, inequality, or matrix, and Calcupy will try to detect your input and give relevant visuals. Because Calcupy is powered by the SymPy computer algebra system, it is possible to manipulate expressions in the input field (see [SymPy syntax](#SymPy-syntax)).
 
-The app has been deployed to [`https://calcupy.herokuapp.com/`](https://calcupy.herokuapp.com/). It may take some time initially, because the server has to wake up if it has not been used.
+Quickly jump to a section in this document:
+
+ 1. [Calcupy](#calcupy)
+    1. [Released app](#released-app)
+    2. [Roadmap](#roadmap)
+ 2. [Usage](#usage)
+ 3. [Examples](#examples)
+ 4. [SymPy syntax](#sympy-syntax)
+ 5. [Contributions](#contributions)
+ 6. [Thanks](#thanks)
+
+## Released app
+
+The app has been deployed to [`https://calcupy.herokuapp.com/`](https://calcupy.herokuapp.com/). It may take some time initially, because the server has to wake up if it has not been used for 30 minutes.
+
+Check out the [release notes](/release_notes.md) to see what functionality has been developed and released recently.
+
+## Roadmap
+
+The roadmap covers a list of functionality that we like to have Calcupy be able to understand. The following areas of mathematics will be added:
+
+ * Algebra, calculus, linear algebra
+ * Graph theory
+ * Statistics / Probability theory
+ * Linear programming solvers
+ * Constraint satisfaction problem (CSP) solvers
+
+Currently the app is in a _proof-of-concept mode_, which means that we will develop rapidly. In later stages the design patterns that have emerged will be extrapolated, and the entire app will be rebuild around those patterns.
 
 # Usage
 
@@ -102,6 +129,12 @@ There is no UI component yet to change the plot limits. However, it can be done 
 # Contributions
 
 Feel free to contribute! Also, if you have an idea, please let me know (or submit it as an issue on Github)!
+
+## Contributors
+
+Special thanks to all of our contributors!
+
+ * [@johannesheesterman](https://github.com/johannesheesterman)
 
 # Thanks
 
